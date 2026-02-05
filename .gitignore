@@ -1,0 +1,10 @@
+data/
+db_data/
+mysql_data/
+
+*.log
+.DS_Store
+Thumbs.db
+
+.idea/
+.vscode/

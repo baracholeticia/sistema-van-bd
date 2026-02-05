@@ -1,0 +1,16 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: van_system_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: SistemaVan
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./database:/docker-entrypoint-initdb.d
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
