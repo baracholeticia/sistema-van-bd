@@ -59,7 +59,6 @@ CREATE TABLE travel_prices (
     dropoff_stop_id UUID NOT NULL,
     price DECIMAL(10,2) NOT NULL,
     FOREIGN KEY (travel_id) REFERENCES travels(id) ON DELETE CASCADE,
-    -- AJUSTADO: Se o ponto de parada sumir (ex: deletar rota), o preço some
     FOREIGN KEY (boarding_stop_id) REFERENCES route_stops(id) ON DELETE CASCADE,
     FOREIGN KEY (dropoff_stop_id) REFERENCES route_stops(id) ON DELETE CASCADE
 );
