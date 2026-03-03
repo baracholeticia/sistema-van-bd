@@ -324,7 +324,7 @@ O objetivo é a implementação de um banco de dados funcional como requisito pa
 
 ## Como logar como Admistrador
 
-1. Login`admin.sistema@email.com`.
+1. Login`admin.sistemavan@email.com`.
 2. Senha `password`.
 
 ---
