@@ -7,7 +7,8 @@
       <div style="flex: 1 1 0; height: 51px; justify-content: flex-start; align-items: center; gap: 20px; display: flex">
         <div style="flex: 1 1 0; align-self: stretch; padding-left: 19px; padding-right: 19px; background: #EEEEEF; border-radius: 46px; justify-content: flex-start; align-items: center; gap: 14px; display: flex">
           <img src="assets/icons/search-normal.svg" style="width: 24px; height: 24px; opacity: 0.7">
-          <input type="text" [(ngModel)]="searchQuery" placeholder="Pesquisar por Rota, Motorista ou Placa" 
+          
+          <input type="text" [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" placeholder="Pesquisar por Rota, Motorista ou Placa" 
             style="border: none; background: transparent; outline: none; width: 100%; color: #646464; font-size: 20px; font-family: 'Google Sans Flex'; font-weight: 500;">
         </div>
         
@@ -233,7 +234,7 @@
                 <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
                   <label style="color: #112B3C; font-size: 14px; font-weight: 500;">Status da Viagem</label>
                   <select [(ngModel)]="newTrip.status" style="padding: 12px; border-radius: 8px; border: none; background: #EEEEEF; outline: none; font-family: 'Google Sans Flex';">
-                    <option value="Agendada">Agendada</option>
+                    <option value="SCHEDULED">Agendada</option>
                     <option value="Em Andamento">Em Andamento</option>
                     <option value="Concluída">Concluída</option>
                     <option value="Cancelada">Cancelada</option>

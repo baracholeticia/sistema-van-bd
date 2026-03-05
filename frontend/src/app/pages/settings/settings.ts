@@ -1,46 +1,33 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ViagensService } from '../../services/viagens.service';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './settings.html'
+  templateUrl: './settings.html' // Ou o nome do seu HTML
 })
 export class SettingsComponent implements OnInit {
   
   // --- BARRA DE PESQUISA ---
-  searchQuery = '';
+  searchQuery = signal('');
 
-  // --- DADOS DA TABELA DE VIAGENS ---
-  trips = signal<any[]>([
-    {
-      id: 1,
-      driverName: 'Carlos Almeida',
-      dateTime: '2026-03-10T08:00',
-      pickupPoint: 'Praça Central',
-      dropoffPoint: 'Aeroporto Internacional',
-      status: 'Agendada',
-      pricePerKm: 2.50,
-      tripName: 'Rota Centro - Aeroporto',
-      reviews: [
-        { id: 101, clientName: 'João Silva', rating: 5, comment: 'Motorista excelente e pontual!' },
-        { id: 102, clientName: 'Maria Souza', rating: 4, comment: 'Viagem tranquila, recomendo.' }
-      ]
-    },
-    {
-      id: 2,
-      driverName: 'Mariana Santos',
-      dateTime: '2026-03-12T14:30',
-      pickupPoint: 'Rodoviária',
-      dropoffPoint: 'Shopping Sul',
-      status: 'Cancelada',
-      pricePerKm: 2.00,
-      tripName: 'Rota Rodoviária - Sul',
-      reviews: []
-    }
-  ]);
+  // --- DADOS ORIGINAIS DA API ---
+  allTrips = signal<any[]>([]);
+
+  // --- DADOS FILTRADOS PARA A TABELA ---
+  trips = computed(() => {
+    const query = this.searchQuery().toLowerCase();
+    if (!query) return this.allTrips();
+
+    return this.allTrips().filter(trip => 
+      trip.driverName.toLowerCase().includes(query) ||
+      trip.routeName.toLowerCase().includes(query) ||
+      trip.vehiclePlate.toLowerCase().includes(query)
+    );
+  });
 
   // --- CONTROLES DOS MODAIS ---
   showReviewsModal = false;
@@ -55,51 +42,94 @@ export class SettingsComponent implements OnInit {
     dateTime: '',
     pickupPoint: '',
     dropoffPoint: '',
-    status: 'Agendada',
+    status: 'SCHEDULED', // Mudou para o inglês por conta do enum do back-end
     pricePerKm: 0
   };
 
-  // Variáveis mantidas apenas para evitar erro no bloco HTML antigo (que você não excluiu)
   showDeleteModal = false;
   selectedJourney: any = null;
 
+  // Injetando o serviço no construtor
+  constructor(private viagensService: ViagensService) {}
+
   ngOnInit() {
-    // Local onde você chamará sua API no futuro
+    this.carregarViagens();
+  }
+
+  carregarViagens() {
+    this.viagensService.getViagens().subscribe({
+      next: (dados) => {
+        // Mapeando o TravelResponseDTO para o formato que a tabela espera
+        const viagensFormatadas = dados.map((viagem: any) => {
+          
+          // O Spring manda "dd/MM/yyyy HH:mm", o HTML espera uma data que o pipe date entenda
+          const [dataStr, horaStr] = viagem.departureTime.split(' ');
+          const [dia, mes, ano] = dataStr.split('/');
+          const isoDateString = `${ano}-${mes}-${dia}T${horaStr}:00`;
+
+          // Formatando o status para a cor certa na tabela
+          let statusTraduzido = 'Agendada';
+          if (viagem.status === 'CONFIRMED' || viagem.status === 'SCHEDULED') statusTraduzido = 'Agendada';
+          else if (viagem.status === 'FINISHED' || viagem.status === 'COMPLETED') statusTraduzido = 'Concluída';
+          else if (viagem.status === 'CANCELED' || viagem.status === 'CANCELLED') statusTraduzido = 'Cancelada';
+
+          return {
+            id: viagem.id,
+            driverName: viagem.driverName || 'Sem motorista',
+            dateTime: isoDateString,
+            pickupPoint: viagem.routeName.split('-')[0]?.trim() || 'Ponto A',
+            dropoffPoint: viagem.routeName.split('-')[1]?.trim() || 'Ponto B',
+            status: statusTraduzido,
+            originalStatus: viagem.status, // guarda o enum para salvar edição
+            routeName: viagem.routeName,
+            vehiclePlate: viagem.vehiclePlate,
+            // Preços vêm como array no DTO
+            pricePerKm: viagem.prices && viagem.prices.length > 0 ? viagem.prices[0].price : 0,
+            tripName: viagem.routeName,
+            reviews: [] // O DTO atual de TravelResponse não traz as reviews aninhadas
+          };
+        });
+
+        this.allTrips.set(viagensFormatadas);
+      },
+      error: (err) => {
+        console.error('Erro ao carregar as viagens do back-end', err);
+      }
+    });
   }
 
   // ==========================================
   // FUNÇÕES DE ADICIONAR VIAGEM
   // ==========================================
-  
   openAddTripModal() {
     this.newTrip = {
       driverName: '',
       dateTime: '',
       pickupPoint: '',
       dropoffPoint: '',
-      status: 'Agendada',
+      status: 'SCHEDULED',
       pricePerKm: 0
     };
     this.showAddTripModal = true;
   }
 
   saveNewTrip() {
-    // Gera um ID temporário e salva na lista (Substituir pela API depois)
+    // Por enquanto simula localmente na tela
     const tripToSave = {
       id: Math.floor(Math.random() * 1000) + 100,
-      tripName: `Rota ${this.newTrip.pickupPoint} - ${this.newTrip.dropoffPoint}`,
+      tripName: `${this.newTrip.pickupPoint} - ${this.newTrip.dropoffPoint}`,
       reviews: [],
+      status: 'Agendada',
       ...this.newTrip
     };
     
-    this.trips.update(list => [...list, tripToSave]);
+    this.allTrips.update(list => [...list, tripToSave]);
     this.closeTripModals();
   }
 
   // ==========================================
   // FUNÇÕES DE VISUALIZAÇÃO, EDIÇÃO E EXCLUSÃO
   // ==========================================
-
   openReviewsModal(trip: any) {
     this.selectedTrip = trip;
     this.showReviewsModal = true;
@@ -107,25 +137,21 @@ export class SettingsComponent implements OnInit {
 
   deleteReview(reviewId: number) {
     const confirmacao = confirm('Tem certeza que deseja excluir esta avaliação?');
-    
     if (confirmacao) {
-      // 1. Remove da viagem que está aberta no modal
       this.selectedTrip.reviews = this.selectedTrip.reviews.filter((r: any) => r.id !== reviewId);
-      
-      // 2. Atualiza a lista principal (signal) para guardar a alteração
-      this.trips.update(list => 
+      this.allTrips.update(list => 
         list.map(t => t.id === this.selectedTrip.id ? this.selectedTrip : t)
       );
     }
   }
 
   openEditTripModal(trip: any) {
-    this.selectedTrip = { ...trip }; // Cria uma cópia para não alterar a tabela antes de salvar
+    this.selectedTrip = { ...trip }; 
     this.showEditTripModal = true;
   }
 
   saveTripEdit() {
-    this.trips.update(list => 
+    this.allTrips.update(list => 
       list.map(t => t.id === this.selectedTrip.id ? this.selectedTrip : t)
     );
     this.closeTripModals();
@@ -137,7 +163,7 @@ export class SettingsComponent implements OnInit {
   }
 
   deleteTrip() {
-    this.trips.update(list => list.filter(t => t.id !== this.selectedTrip.id));
+    this.allTrips.update(list => list.filter(t => t.id !== this.selectedTrip.id));
     this.closeTripModals();
   }
 
@@ -149,7 +175,6 @@ export class SettingsComponent implements OnInit {
     this.selectedTrip = null;
   }
 
-  // Funções mantidas apenas para não quebrar o HTML antigo do "Excluir trecho"
   closeModals() {
     this.showDeleteModal = false;
   }
