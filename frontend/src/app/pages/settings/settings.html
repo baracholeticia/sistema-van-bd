@@ -1,4 +1,4 @@
-<div style="width: 1270px; padding-left: 10px; padding-right: 10px; border-radius: 24px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 20px; display: inline-flex">
+<div style="width: 1270px; padding-left: 10px; padding-right: 10px; border-radius: 24px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 20px; display: inline-flex; padding-bottom: 60px;">
   
   <div style="align-self: stretch; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 8px; display: flex">
     
@@ -7,98 +7,62 @@
       <div style="flex: 1 1 0; height: 51px; justify-content: flex-start; align-items: center; gap: 20px; display: flex">
         <div style="flex: 1 1 0; align-self: stretch; padding-left: 19px; padding-right: 19px; background: #EEEEEF; border-radius: 46px; justify-content: flex-start; align-items: center; gap: 14px; display: flex">
           <img src="assets/icons/search-normal.svg" style="width: 24px; height: 24px; opacity: 0.7">
-          <input type="text" [(ngModel)]="searchQuery" placeholder="Pesquisar por Rota, Motorista ou Placa" 
+          
+          <input type="text" [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" placeholder="Pesquisar por Rota, Motorista ou Placa" 
             style="border: none; background: transparent; outline: none; width: 100%; color: #646464; font-size: 20px; font-family: 'Google Sans Flex'; font-weight: 500;">
         </div>
-      </div>
-    </div>
-
-    <div style="align-self: stretch; flex-direction: column; gap: 4px; display: flex">
-      <div style="align-self: stretch; padding: 20px; background: #EEEEEF; border-radius: 24px 24px 4px 4px; flex-direction: column; gap: 10px; display: flex">
-        <div style="align-self: stretch; justify-content: center; align-items: center; gap: 10px; display: inline-flex">
-          
-          <div style="flex: 1; flex-direction: column; gap: 3px; display: flex">
-            <div style="color: #112B3C; font-size: 14px; font-weight: 500">Rota</div>
-            <select [(ngModel)]="newRouteId" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background: #FAFAFA; color: #646464; font-size: 16px; outline: none;">
-              <option value="">Selecione uma rota</option>
-              @for (route of routes(); track route.id) {
-                <option [value]="route.id">{{ route.name }}</option>
-              }
-            </select>
-          </div>
-          
-          <div style="flex: 1; flex-direction: column; gap: 3px; display: flex">
-            <div style="color: #112B3C; font-size: 14px; font-weight: 500">Veículo</div>
-            <select [(ngModel)]="newVehicleId" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background: #FAFAFA; color: #646464; font-size: 16px; outline: none;">
-              <option value="">Selecione um veículo</option>
-              @for (v of vehicles(); track v.id) {
-                <option [value]="v.id">{{ v.name || v.plate }}</option>
-              }
-            </select>
-          </div>
-
-        </div>
-
-        <div style="align-self: stretch; justify-content: space-between; align-items: center; display: inline-flex">
-          <div style="display: flex; gap: 64px">
-            <div style="color: #646464; font-size: 16px;">Tarifa base: <b style="color: #112B3C">R${{ currentRate | number:'1.2-2' }}</b></div>
-          </div>
-          <div (click)="addJourney()" style="cursor: pointer; width: 330px; padding: 14px; background: #F66B0E; border-radius: 8px; color: #EEEEEF; font-size: 16px; font-family: 'Google Sans Flex'; font-weight: 700; text-transform: uppercase; text-align: center; box-shadow: 0px 4px 10px rgba(246, 107, 14, 0.30);">
-            adicionar novo trecho
-          </div>
-        </div>
-      </div>
-
-      <div style="align-self: stretch; padding: 24px; background: #EEEEEF; border-radius: 4px 4px 24px 24px; flex-direction: column; gap: 10px; display: flex">
-        <div style="align-self: stretch; padding: 14px 50px; background: #FAFAFA; border-radius: 12px; justify-content: space-between; align-items: center; display: flex">
-          <div style="flex: 1; color: #112B3C; font-size: 20px; font-family: 'Google Sans Flex'; font-weight: 700">Rota / Motorista</div>
-          <div style="flex: 1; color: #112B3C; font-size: 20px; font-family: 'Google Sans Flex'; font-weight: 700">Veículo</div>
-          <div style="flex: 1; color: #112B3C; font-size: 20px; font-family: 'Google Sans Flex'; font-weight: 700; text-align: center">Status</div>
-          <div style="width: 100px; color: #112B3C; font-size: 20px; font-family: 'Google Sans Flex'; font-weight: 700; text-align: right">Ações</div>
-        </div>
-
-        @for (journey of filteredJourneys(); track journey.id) {
-          <div style="align-self: stretch; padding: 14px 50px; justify-content: space-between; align-items: center; display: flex">
-            <div style="flex: 1;">
-               <div style="color: #646464; font-size: 18px; font-weight: 500; font-family: 'Google Sans Flex';">{{ journey.routeName }}</div>
-               <div style="color: #999; font-size: 14px; font-family: 'Work Sans';">{{ journey.driverName }}</div>
-            </div>
-            <div style="flex: 1; color: #646464; font-size: 18px; font-family: 'Google Sans Flex';">{{ journey.vehiclePlate }}</div>
-            <div style="flex: 1; text-align: center; font-family: 'Google Sans Flex'; font-weight: 700;">
-               <span [style.color]="journey.status === 'CONCLUIDA' || journey.status === 'Concluída' ? '#2E7D32' : '#F66B0E'">{{ journey.status }}</span>
-            </div>
-            
-            <div style="width: 100px; justify-content: flex-end; align-items: center; gap: 20px; display: flex">
-              <div (click)="openEditModal(journey)" style="cursor: pointer; width: 24px; height: 24px; background: #646464; mask-image: url('assets/icons/edit.svg'); -webkit-mask-image: url('assets/icons/edit.svg'); mask-size: contain; mask-repeat: no-repeat;"></div>
-              <div (click)="openDeleteModal(journey)" style="cursor: pointer; width: 24px; height: 24px; background: #646464; mask-image: url('assets/icons/trash.svg'); -webkit-mask-image: url('assets/icons/trash.svg'); mask-size: contain; mask-repeat: no-repeat;"></div>
-            </div>
-          </div>
-          <div style="align-self: stretch; height: 1px; background: #646464; opacity: 0.1"></div>
-        }
-      </div>
-    </div>
-  </div>
-
-  <div style="align-self: stretch; flex-direction: column; gap: 8px; display: flex; margin-top: 20px">
-    <div style="color: #112B3C; font-size: 40px; font-family: 'Google Sans Flex'; font-weight: 700">Tarifas</div>
-    <div style="align-self: stretch; padding: 20px; background: #EEEEEF; border-radius: 24px; flex-direction: column; gap: 15px; display: flex">
-      <div style="justify-content: space-between; align-items: center; display: flex">
-        <div style="color: #112B3C; font-size: 20px; font-family: 'Google Sans Flex'; font-weight: 700">Valor da tarifa por km</div>
-        <div style="color: #112B3C; font-size: 18px; font-family: 'Google Sans Flex'; font-weight: 700">Valor atual: <b style="color: #F66B0E">R$ {{ currentRate | number:'1.2-2' }}</b></div>
-      </div>
-      
-      <div style="display: flex; gap: 20px; align-items: center">
-        <input type="number" [(ngModel)]="newRateValue" placeholder="0,00" 
-          style="flex: 1; padding: 12px; border-radius: 8px; border: none; background: #FAFAFA; font-size: 18px; outline: none; color: #646464; font-family: 'Work Sans';">
         
-        <div (click)="saveRate()" style="cursor: pointer; width: 330px; padding: 14px; background: #F66B0E; border-radius: 8px; color: #EEEEEF; font-family: 'Google Sans Flex'; font-weight: 700; text-transform: uppercase; text-align: center; box-shadow: 0px 4px 10px rgba(246, 107, 14, 0.30);">
-          Salvar Nova Tarifa
+        <div (click)="openAddTripModal()" style="cursor: pointer; min-width: 51px; height: 51px; background: #F66B0E; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0px 4px 10px rgba(246, 107, 14, 0.30);" title="Adicionar Nova Viagem">
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="white">
+            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+          </svg>
         </div>
       </div>
-      
-      <div style="color: #646464; font-size: 14px; font-family: 'Google Sans Flex';">
-        Valor simulado para 100km: <b>R${{ (newRateValue > 0 ? newRateValue : currentRate) * 100 | number:'1.2-2' }}</b>
+    </div>
+
+  <div style="align-self: stretch; flex-direction: column; gap: 8px; display: flex; margin-top: 40px">
+    <div style="color: #112B3C; font-size: 40px; font-family: 'Google Sans Flex'; font-weight: 700">Viagens Cadastradas</div>
+    
+    <div style="align-self: stretch; padding: 24px; background: #EEEEEF; border-radius: 24px; flex-direction: column; gap: 10px; display: flex">
+      <div style="align-self: stretch; padding: 14px 30px; background: #FAFAFA; border-radius: 12px; display: flex; align-items: center; justify-content: space-between;">
+        <div style="flex: 1.5; color: #112B3C; font-size: 18px; font-family: 'Google Sans Flex'; font-weight: 700">Motorista</div>
+        <div style="flex: 1.5; color: #112B3C; font-size: 18px; font-family: 'Google Sans Flex'; font-weight: 700">Data e Hora</div>
+        <div style="flex: 2; color: #112B3C; font-size: 18px; font-family: 'Google Sans Flex'; font-weight: 700">Ponto de Subida</div>
+        <div style="flex: 2; color: #112B3C; font-size: 18px; font-family: 'Google Sans Flex'; font-weight: 700">Ponto de Descida</div>
+        <div style="flex: 1; color: #112B3C; font-size: 18px; font-family: 'Google Sans Flex'; font-weight: 700; text-align: center">Status</div>
+        <div style="width: 140px; color: #112B3C; font-size: 18px; font-family: 'Google Sans Flex'; font-weight: 700; text-align: right">Ações</div>
       </div>
+
+      @for (trip of trips(); track trip.id) {
+        <div style="align-self: stretch; padding: 14px 30px; display: flex; align-items: center; justify-content: space-between;">
+          <div style="flex: 1.5; color: #646464; font-size: 16px; font-family: 'Google Sans Flex'; font-weight: 700;">
+            {{ trip.driverName }}
+          </div>
+          <div style="flex: 1.5; color: #646464; font-size: 16px; font-family: 'Google Sans Flex'; font-weight: 500;">
+            {{ trip.dateTime | date:'dd/MM/yyyy HH:mm' }}
+          </div>
+          <div style="flex: 2; color: #646464; font-size: 16px; font-family: 'Google Sans Flex';">{{ trip.pickupPoint }}</div>
+          <div style="flex: 2; color: #646464; font-size: 16px; font-family: 'Google Sans Flex';">{{ trip.dropoffPoint }}</div>
+          <div style="flex: 1; text-align: center; font-family: 'Google Sans Flex'; font-weight: 700;">
+             <span [style.color]="trip.status === 'Cancelada' ? '#D32F2F' : '#2E7D32'">{{ trip.status }}</span>
+          </div>
+          
+          <div style="width: 140px; justify-content: flex-end; align-items: center; gap: 16px; display: flex">
+            <div (click)="openReviewsModal(trip)" style="cursor: pointer; color: #F66B0E; display: flex; align-items: center;" title="Ver Avaliações">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+              </svg>
+            </div>
+            <div (click)="openEditTripModal(trip)" style="cursor: pointer; width: 24px; height: 24px; background: #646464; mask-image: url('assets/icons/edit.svg'); -webkit-mask-image: url('assets/icons/edit.svg'); mask-size: contain; mask-repeat: no-repeat;" title="Editar Viagem"></div>
+            <div (click)="openDeleteTripModal(trip)" style="cursor: pointer; width: 24px; height: 24px; background: #646464; mask-image: url('assets/icons/trash.svg'); -webkit-mask-image: url('assets/icons/trash.svg'); mask-size: contain; mask-repeat: no-repeat;" title="Excluir Viagem"></div>
+          </div>
+        </div>
+        <div style="align-self: stretch; height: 1px; background: #646464; opacity: 0.1"></div>
+      }
+      
+      @if (trips().length === 0) {
+        <div style="padding: 20px; text-align: center; color: #999; font-family: 'Google Sans Flex';">Nenhuma viagem cadastrada encontrada.</div>
+      }
     </div>
   </div>
 
@@ -106,15 +70,187 @@
     <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;">
         <div style="width: 1178px; padding: 24px 68px; background: #FAFAFA; border-radius: 24px; flex-direction: column; gap: 24px; display: flex">
             <div style="color: #112B3C; font-size: 64px; font-family: 'Google Sans Flex'; font-weight: 700">Excluir trecho de viagem</div>
-            
             <div style="flex-direction: column; gap: 10px; display: flex">
                 <div style="color: #112B3C; font-size: 24px; font-family: 'Google Sans Flex'; font-weight: 700">Tem certeza que deseja excluir o trecho {{selectedJourney?.routeName}}?</div>
                 <div style="align-self: flex-start; padding: 9px 24px; background: #EEEEEF; border-radius: 12px; color: #F66B0E; font-size: 16px; font-weight: 700; font-family: 'Google Sans Flex'; text-transform: uppercase">Esta ação não poderá ser revertida</div>
             </div>
-    
             <div style="justify-content: flex-end; gap: 24px; display: flex; margin-top: 16px;">
                 <div (click)="closeModals()" style="cursor: pointer; padding: 14px 60px; background: #EEEEEF; border-radius: 8px; color: #557D96; font-family: 'Google Sans Flex'; font-weight: 700; text-transform: uppercase">Cancelar</div>
                 <div (click)="deleteJourney()" style="cursor: pointer; padding: 14px 60px; background: #557D96; border-radius: 8px; color: #EEEEEF; font-family: 'Google Sans Flex'; font-weight: 700; text-transform: uppercase">Excluir</div>
+            </div>
+        </div>
+    </div>
+  }
+
+  @if (showReviewsModal) {
+    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;">
+        <div style="width: 800px; max-height: 80vh; overflow-y: auto; padding: 32px; background: #FAFAFA; border-radius: 24px; flex-direction: column; gap: 24px; display: flex">
+            
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="color: #112B3C; font-size: 32px; font-family: 'Google Sans Flex'; font-weight: 700">Avaliações da Viagem</div>
+              <button (click)="closeTripModals()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #646464;">&times;</button>
+            </div>
+            
+            <div style="color: #646464; font-size: 16px; font-family: 'Google Sans Flex'; font-weight: 500; margin-bottom: 10px;">
+              Ref: {{selectedTrip?.tripName}}
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+              @for (review of selectedTrip?.reviews; track review.id) {
+                <div style="display: flex; gap: 16px; border-bottom: 1px solid #E0E0E0; padding-bottom: 16px;">
+                  <div style="width: 50px; height: 50px; border-radius: 50%; background-color: #D9D9D9; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 20px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#999"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                  </div>
+                  <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                      <span style="color: #112B3C; font-size: 16px; font-family: 'Google Sans Flex'; font-weight: 700">{{ review.clientName }}</span>
+                      
+                      <div style="display: flex; align-items: center; gap: 16px;">
+                        <span style="color: #F66B0E; font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 4px;">
+                          {{ review.rating }} <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                        </span>
+                        
+                        <div (click)="deleteReview(review.id)" style="cursor: pointer; color: #D32F2F; display: flex; align-items: center;" title="Excluir Avaliação">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                          </svg>
+                        </div>
+                      </div>
+
+                    </div>
+                    <div style="color: #646464; font-size: 14px; font-family: 'Google Sans Flex';">
+                      {{ review.comment }}
+                    </div>
+                  </div>
+                </div>
+              }
+              
+              @if (!selectedTrip?.reviews || selectedTrip?.reviews.length === 0) {
+                <div style="text-align: center; color: #999; padding: 20px; font-family: 'Google Sans Flex';">Esta viagem ainda não possui avaliações.</div>
+              }
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+              <div (click)="closeTripModals()" style="cursor: pointer; padding: 12px 40px; background: #EEEEEF; border-radius: 8px; color: #557D96; font-family: 'Google Sans Flex'; font-weight: 700; text-transform: uppercase">Fechar</div>
+            </div>
+        </div>
+    </div>
+  }
+
+  @if (showEditTripModal) {
+    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;">
+        <div style="width: 800px; padding: 32px; background: #FAFAFA; border-radius: 24px; flex-direction: column; gap: 20px; display: flex">
+            <div style="color: #112B3C; font-size: 32px; font-family: 'Google Sans Flex'; font-weight: 700">Editar Viagem</div>
+            
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              
+              <div style="display: flex; gap: 16px;">
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                  <label style="color: #112B3C; font-size: 14px; font-weight: 500;">Motorista</label>
+                  <input type="text" [(ngModel)]="selectedTrip.driverName" style="padding: 12px; border-radius: 8px; border: none; background: #EEEEEF; outline: none; font-family: 'Google Sans Flex';">
+                </div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                  <label style="color: #112B3C; font-size: 14px; font-weight: 500;">Data e Hora de Saída</label>
+                  <input type="datetime-local" [(ngModel)]="selectedTrip.dateTime" style="padding: 12px; border-radius: 8px; border: none; background: #EEEEEF; outline: none; font-family: 'Google Sans Flex';">
+                </div>
+              </div>
+              
+              <div style="display: flex; gap: 16px;">
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                  <label style="color: #112B3C; font-size: 14px; font-weight: 500;">Ponto de Subida</label>
+                  <input type="text" [(ngModel)]="selectedTrip.pickupPoint" style="padding: 12px; border-radius: 8px; border: none; background: #EEEEEF; outline: none; font-family: 'Google Sans Flex';">
+                </div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                  <label style="color: #112B3C; font-size: 14px; font-weight: 500;">Ponto de Descida</label>
+                  <input type="text" [(ngModel)]="selectedTrip.dropoffPoint" style="padding: 12px; border-radius: 8px; border: none; background: #EEEEEF; outline: none; font-family: 'Google Sans Flex';">
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 4px;">
+                <label style="color: #112B3C; font-size: 14px; font-weight: 500;">Status da Viagem</label>
+                <select [(ngModel)]="selectedTrip.status" style="padding: 12px; border-radius: 8px; border: none; background: #EEEEEF; outline: none; font-family: 'Google Sans Flex';">
+                  <option value="Agendada">Agendada</option>
+                  <option value="Em Andamento">Em Andamento</option>
+                  <option value="Concluída">Concluída</option>
+                  <option value="Cancelada">Cancelada</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="justify-content: flex-end; gap: 16px; display: flex; margin-top: 20px;">
+                <div (click)="closeTripModals()" style="cursor: pointer; padding: 12px 40px; background: #EEEEEF; border-radius: 8px; color: #557D96; font-family: 'Google Sans Flex'; font-weight: 700; text-transform: uppercase">Cancelar</div>
+                <div (click)="saveTripEdit()" style="cursor: pointer; padding: 12px 40px; background: #F66B0E; border-radius: 8px; color: white; font-family: 'Google Sans Flex'; font-weight: 700; text-transform: uppercase">Salvar</div>
+            </div>
+        </div>
+    </div>
+  }
+
+  @if (showDeleteTripModal) {
+    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;">
+        <div style="width: 800px; padding: 32px; background: #FAFAFA; border-radius: 24px; flex-direction: column; gap: 24px; display: flex">
+            <div style="color: #112B3C; font-size: 40px; font-family: 'Google Sans Flex'; font-weight: 700">Excluir Viagem</div>
+            <div style="flex-direction: column; gap: 10px; display: flex">
+                <div style="color: #112B3C; font-size: 20px; font-family: 'Google Sans Flex'; font-weight: 700">Tem certeza que deseja excluir a viagem do dia {{ selectedTrip?.dateTime | date:'dd/MM/yyyy HH:mm' }}?</div>
+                <div style="align-self: flex-start; padding: 9px 24px; background: #EEEEEF; border-radius: 12px; color: #D32F2F; font-size: 14px; font-weight: 700; font-family: 'Google Sans Flex'; text-transform: uppercase">Esta ação não poderá ser revertida</div>
+            </div>
+            <div style="justify-content: flex-end; gap: 16px; display: flex; margin-top: 16px;">
+                <div (click)="closeTripModals()" style="cursor: pointer; padding: 12px 40px; background: #EEEEEF; border-radius: 8px; color: #557D96; font-family: 'Google Sans Flex'; font-weight: 700; text-transform: uppercase">Cancelar</div>
+                <div (click)="deleteTrip()" style="cursor: pointer; padding: 12px 40px; background: #D32F2F; border-radius: 8px; color: white; font-family: 'Google Sans Flex'; font-weight: 700; text-transform: uppercase">Excluir</div>
+            </div>
+        </div>
+    </div>
+  }
+
+  @if (showAddTripModal) {
+    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;">
+        <div style="width: 800px; padding: 32px; background: #FAFAFA; border-radius: 24px; flex-direction: column; gap: 20px; display: flex">
+            <div style="color: #112B3C; font-size: 32px; font-family: 'Google Sans Flex'; font-weight: 700">Adicionar Nova Viagem</div>
+            
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              
+              <div style="display: flex; gap: 16px;">
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                  <label style="color: #112B3C; font-size: 14px; font-weight: 500;">Motorista</label>
+                  <input type="text" [(ngModel)]="newTrip.driverName" placeholder="Ex: Carlos Almeida" style="padding: 12px; border-radius: 8px; border: none; background: #EEEEEF; outline: none; font-family: 'Google Sans Flex';">
+                </div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                  <label style="color: #112B3C; font-size: 14px; font-weight: 500;">Data e Hora de Saída</label>
+                  <input type="datetime-local" [(ngModel)]="newTrip.dateTime" style="padding: 12px; border-radius: 8px; border: none; background: #EEEEEF; outline: none; font-family: 'Google Sans Flex';">
+                </div>
+              </div>
+              
+              <div style="display: flex; gap: 16px;">
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                  <label style="color: #112B3C; font-size: 14px; font-weight: 500;">Ponto de Subida</label>
+                  <input type="text" [(ngModel)]="newTrip.pickupPoint" placeholder="Ex: Praça Central" style="padding: 12px; border-radius: 8px; border: none; background: #EEEEEF; outline: none; font-family: 'Google Sans Flex';">
+                </div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                  <label style="color: #112B3C; font-size: 14px; font-weight: 500;">Ponto de Descida</label>
+                  <input type="text" [(ngModel)]="newTrip.dropoffPoint" placeholder="Ex: Aeroporto" style="padding: 12px; border-radius: 8px; border: none; background: #EEEEEF; outline: none; font-family: 'Google Sans Flex';">
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 16px;">
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                  <label style="color: #112B3C; font-size: 14px; font-weight: 500;">Status da Viagem</label>
+                  <select [(ngModel)]="newTrip.status" style="padding: 12px; border-radius: 8px; border: none; background: #EEEEEF; outline: none; font-family: 'Google Sans Flex';">
+                    <option value="SCHEDULED">Agendada</option>
+                    <option value="Em Andamento">Em Andamento</option>
+                    <option value="Concluída">Concluída</option>
+                    <option value="Cancelada">Cancelada</option>
+                  </select>
+                </div>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                  <label style="color: #112B3C; font-size: 14px; font-weight: 500;">Valor por Km (R$)</label>
+                  <input type="number" step="0.01" [(ngModel)]="newTrip.pricePerKm" placeholder="0.00" style="padding: 12px; border-radius: 8px; border: none; background: #EEEEEF; outline: none; font-family: 'Google Sans Flex';">
+                </div>
+              </div>
+
+            </div>
+
+            <div style="justify-content: flex-end; gap: 16px; display: flex; margin-top: 20px;">
+                <div (click)="closeTripModals()" style="cursor: pointer; padding: 12px 40px; background: #EEEEEF; border-radius: 8px; color: #557D96; font-family: 'Google Sans Flex'; font-weight: 700; text-transform: uppercase">Cancelar</div>
+                <div (click)="saveNewTrip()" style="cursor: pointer; padding: 12px 40px; background: #F66B0E; border-radius: 8px; color: white; font-family: 'Google Sans Flex'; font-weight: 700; text-transform: uppercase">Adicionar Viagem</div>
             </div>
         </div>
     </div>

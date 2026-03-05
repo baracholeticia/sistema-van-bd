@@ -14,6 +14,8 @@ export interface Motorista {
   birthDate: string;
   registrationStatus: 'PENDING' | 'APPROVED' | 'REJECTED';
   rejectionReason?: string;
+  vehicleModel?: string;
+  vehiclePlate?: string;
 }
 
 interface PageResponse<T> {

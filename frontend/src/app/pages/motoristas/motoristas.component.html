@@ -1,130 +1,109 @@
 <div class="w-full h-full bg-[#FAFAFA] p-5">
 
   <div class="flex items-center gap-5 mb-6">
-
     <h1 class="text-text text-header-1 tracking-narrow shrink-0">
       Motoristas
     </h1>
 
     <div class="flex-1 flex items-center gap-6 h-14">
-
       <div class="flex-1 h-[51px] bg-[#EEEEEF] rounded-full px-6 flex items-center gap-4">
-        <img
-          src="assets/icons/search-normal.svg"
-          class="w-5 h-5 opacity-70"
-        />
-
-        <input
-          type="text"
-          placeholder="Pesquisar por ID ou Nome"
-          [(ngModel)]="termoBusca"
-          (input)="filtrarMotoristas()"
-          class="bg-transparent outline-none w-full text-[#646464] text-xl"
-        />
+        <img src="assets/icons/search-normal.svg" class="w-5 h-5 opacity-70" />
+        <input type="text" placeholder="Pesquisar por Nome, CNH ou Placa" [(ngModel)]="termoBusca" (input)="filtrarMotoristas()" class="bg-transparent outline-none w-full text-[#646464] text-xl" />
       </div>
 
-      <button
-        (click)="abrirModalAdicionar()"
-        class="w-[45px] h-[45px] bg-[#EEEEEF] rounded-full flex items-center justify-center"
-      >
+      <button (click)="abrirModalAdicionar()" class="w-[45px] h-[45px] bg-[#EEEEEF] rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors cursor-pointer">
         <span class="text-[32px] text-[#646464] leading-none">+</span>
       </button>
-
     </div>
   </div>
 
   <div class="bg-[#EEEEEF] rounded-3xl p-6 flex flex-col gap-4">
 
-
-    <div
-      class="bg-white rounded-xl px-12 py-4 grid grid-cols-[1fr_2fr_1fr_1fr] items-center"
-    >
-      <span class="text-[#112B3C] text-2xl font-bold">
-        ID
-      </span>
-
-      <span class="text-[#112B3C] text-2xl font-bold">
-        Nome
-      </span>
-
-      <span class="text-[#112B3C] text-2xl font-bold">
-        Status
-      </span>
-
-      <span class="text-[#112B3C] text-2xl font-bold text-center">
-        Ações
-      </span>
+    <div class="bg-white rounded-xl px-12 py-4 grid grid-cols-[1fr_2fr_2fr_1fr_1fr] items-center">
+      <span class="text-[#112B3C] text-2xl font-bold">ID</span>
+      <span class="text-[#112B3C] text-2xl font-bold">Nome</span>
+      <span class="text-[#112B3C] text-2xl font-bold">Veículo / Placa</span>
+      <span class="text-[#112B3C] text-2xl font-bold">Status</span>
+      <span class="text-[#112B3C] text-2xl font-bold text-center">Ações</span>
     </div>
 
-    <!-- Estado de carregamento -->
     <div *ngIf="carregando()" class="flex justify-center items-center py-10">
       <span class="text-[#646464] text-lg">Carregando motoristas...</span>
     </div>
-
-    <!-- Estado de erro -->
     <div *ngIf="erro() && !carregando()" class="flex justify-center items-center py-10">
       <span class="text-red-500 font-medium text-base">{{ erro() }}</span>
     </div>
-
-    <!-- Lista vazia -->
     <div *ngIf="!carregando() && !erro() && motoristasFiltrados().length === 0" class="flex justify-center items-center py-10">
       <span class="text-[#646464] text-lg">Nenhum motorista encontrado.</span>
     </div>
 
-    <div
-      *ngFor="let motorista of motoristasFiltrados()"
-      class="px-12 py-4 grid grid-cols-[1fr_2fr_1fr_1fr] items-center border-b border-[#646464]/20"
-    >
-
-      <span class="text-[#646464] text-2xl font-medium truncate w-40 ">
+    <div *ngFor="let motorista of motoristasFiltrados()" class="px-12 py-4 grid grid-cols-[1fr_2fr_2fr_1fr_1fr] items-center border-b border-[#646464]/20">
+      
+      <span class="text-[#646464] text-2xl font-medium truncate w-40" [title]="motorista.id">
         {{ motorista.id }}
       </span>
 
-      <span class="text-[#646464] text-2xl font-medium">
+      <span class="text-[#112B3C] text-2xl font-bold cursor-pointer hover:underline hover:text-blue-600 transition-colors" (click)="abrirModalVisualizar(motorista)">
         {{ motorista.name }}
       </span>
 
+      <div class="flex flex-col">
+        <span class="text-[#646464] text-xl font-medium">{{ motorista.vehicleModel }}</span>
+        <span class="text-[#646464] text-sm">{{ motorista.vehiclePlate }}</span>
+      </div>
+
       <div>
-        <span
-          class="px-4 py-1 rounded-full text-sm font-bold"
+        <span class="px-4 py-1 rounded-full text-sm font-bold"
           [ngClass]="{
             'bg-[#DEF8EE] text-[#4AA785]': motorista.registrationStatus === 'APPROVED',
             'bg-[#f8f4de] text-[#d4b759]': motorista.registrationStatus === 'PENDING',
             'bg-[#f8dede] text-[#d45959]': motorista.registrationStatus === 'REJECTED'
-          }"
-        >
+          }">
           {{ motorista.registrationStatus === 'APPROVED' ? 'Ativo' : motorista.registrationStatus === 'PENDING' ? 'Aguardando' : 'Recusado' }}
         </span>
       </div>
 
       <div class="flex justify-center gap-8">
-        <button (click)="abrirModalEditar(motorista)">
+        <button (click)="abrirModalEditar(motorista)" class="hover:scale-110 transition-transform">
           <img src="assets/icons/edit.svg" class="w-6 h-6" />
         </button>
 
-        <button (click)="abrirModalExcluir(motorista)">
+        <button (click)="abrirModalExcluir(motorista)" class="hover:scale-110 transition-transform">
           <img src="assets/icons/trash.svg" class="w-6 h-6" />
         </button>
       </div>
 
     </div>
-
   </div>
 </div>
 
-<app-motorista-add
-  *ngIf="modalAdicionarAberto"
-  (aoFechar)="fecharModalAdicionar($event)">
-</app-motorista-add>
+<div *ngIf="modalVisualizarAberto" class="fixed inset-0 z-[60] flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" (click)="fecharModalVisualizar()"></div>
+  
+  <div class="relative z-10 bg-white rounded-3xl p-8 max-w-2xl w-full flex flex-col gap-6 shadow-xl">
+    <h2 class="text-3xl font-bold text-[#112B3C] border-b pb-4">Detalhes do Motorista</h2>
 
-<app-motorista-edit
-  *ngIf="modalEditarAberto"
-  [motorista]="motoristaSelecionado"
-  (aoFechar)="fecharModalEditar(true)">
-</app-motorista-edit>
+    <div class="grid grid-cols-2 gap-4 text-lg">
+      <div class="flex flex-col"><span class="text-sm text-gray-500">Nome</span><span class="font-medium text-gray-800">{{ motoristaSelecionadoVisualizacao?.name }}</span></div>
+      <div class="flex flex-col"><span class="text-sm text-gray-500">E-mail</span><span class="font-medium text-gray-800">{{ motoristaSelecionadoVisualizacao?.email }}</span></div>
+      <div class="flex flex-col"><span class="text-sm text-gray-500">CPF</span><span class="font-medium text-gray-800">{{ motoristaSelecionadoVisualizacao?.cpf }}</span></div>
+      <div class="flex flex-col"><span class="text-sm text-gray-500">CNH</span><span class="font-medium text-gray-800">{{ motoristaSelecionadoVisualizacao?.cnh }}</span></div>
+      <div class="flex flex-col"><span class="text-sm text-gray-500">Telefone</span><span class="font-medium text-gray-800">{{ motoristaSelecionadoVisualizacao?.phone }}</span></div>
+      <div class="flex flex-col"><span class="text-sm text-gray-500">Data de Nasc.</span><span class="font-medium text-gray-800">{{ motoristaSelecionadoVisualizacao?.birthDate }}</span></div>
+    </div>
 
-<app-motorista-delete
-  *ngIf="modalExcluirAberto"
-  [motorista]="motoristaSelecionado"
-  (aoFechar)="fecharModalExcluir(true)">
-</app-motorista-delete>
+    <h3 class="text-xl font-bold text-[#112B3C] border-b pb-2 mt-4">Informações do Veículo</h3>
+    <div class="grid grid-cols-2 gap-4 text-lg">
+      <div class="flex flex-col"><span class="text-sm text-gray-500">Modelo</span><span class="font-medium text-gray-800">{{ motoristaSelecionadoVisualizacao?.vehicleModel || 'Não cadastrado' }}</span></div>
+      <div class="flex flex-col"><span class="text-sm text-gray-500">Placa</span><span class="font-medium text-gray-800">{{ motoristaSelecionadoVisualizacao?.vehiclePlate || 'Não cadastrada' }}</span></div>
+    </div>
+
+    <div class="flex justify-end mt-4">
+      <button (click)="fecharModalVisualizar()" class="px-6 py-3 bg-[#EEEEEF] text-[#646464] rounded-xl font-bold hover:bg-gray-300 transition-colors cursor-pointer">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<app-motorista-add *ngIf="modalAdicionarAberto" (aoFechar)="fecharModalAdicionar($event)"></app-motorista-add>
+<app-motorista-edit *ngIf="modalEditarAberto" [motorista]="motoristaSelecionado" (aoFechar)="fecharModalEditar(true)"></app-motorista-edit>
+<app-motorista-delete *ngIf="modalExcluirAberto" [motorista]="motoristaSelecionado" (aoFechar)="fecharModalExcluir(true)"></app-motorista-delete>

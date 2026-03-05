@@ -36,6 +36,10 @@ export class MotoristaEditComponent implements OnInit {
       this.motoristaEditado = { ...this.motorista };
       this.motoristaEditado.phone = this.formatPhone(this.motorista.phone);
       this.motoristaEditado.cpf = this.motorista.cpf || (this.motorista as any).identidade || '';
+      
+      // Carrega os dados do veículo caso existam no modelo original
+      this.motoristaEditado.vehicleModel = (this.motorista as any).vehicleModel || '';
+      this.motoristaEditado.vehiclePlate = (this.motorista as any).vehiclePlate || '';
 
       if (this.motorista.registrationStatus === 'REJECTED' && this.motorista.rejectionReason) {
         this.rejectionReason = this.motorista.rejectionReason;
@@ -80,6 +84,15 @@ export class MotoristaEditComponent implements OnInit {
     input.value = value;
   }
 
+  // NOVO: Formata a placa para sempre maiúscula e remove hífens/símbolos
+  onPlateInput(event: any) {
+    const input = event.target as HTMLInputElement;
+    let value = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (value.length > 7) value = value.slice(0, 7);
+    this.motoristaEditado.vehiclePlate = value;
+    input.value = value;
+  }
+
   fechar() {
     this.aoFechar.emit(false);
   }
@@ -105,6 +118,11 @@ export class MotoristaEditComponent implements OnInit {
       this.toastService.error('O CPF deve ter exatamente 11 dígitos.');
       return;
     }
+    // NOVO: Validação da Placa do Veículo
+    if (this.motoristaEditado.vehiclePlate && this.motoristaEditado.vehiclePlate.length !== 7) {
+      this.toastService.error('A placa do veículo deve conter exatamente 7 caracteres.');
+      return;
+    }
     if (this.motoristaEditado.registrationStatus === 'REJECTED' && !this.rejectionReason.trim()) {
       this.toastService.error('Informe o motivo da rejeição.');
       return;
@@ -115,13 +133,15 @@ export class MotoristaEditComponent implements OnInit {
     const statusMudou = this.motoristaEditado.registrationStatus !== this.motorista?.registrationStatus;
     const isRejected = this.motoristaEditado.registrationStatus === 'REJECTED';
 
-    // Chama updateDriver para os dados gerais (sem status)
+    // Chama updateDriver para os dados gerais (incluindo veículo e placa agora)
     this.adminService.updateDriver(this.motoristaEditado.id, {
       name: this.motoristaEditado.name,
       email: this.motoristaEditado.email,
       phone: rawPhone,
       cnh: this.motoristaEditado.cnh,
       cpf: this.motoristaEditado.cpf || this.motoristaEditado.identidade,
+      //vehicleModel: this.motoristaEditado.vehicleModel, // Enviando modelo
+      //vehiclePlate: this.motoristaEditado.vehiclePlate  // Enviando placa
     }).subscribe({
       next: () => {
         // Se o status mudou, chama updateDriverStatus em seguida

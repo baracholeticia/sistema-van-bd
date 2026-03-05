@@ -19,7 +19,6 @@
 
       <div class="flex flex-col gap-5" *ngIf="motoristaEditado">
 
-        <!-- Nome -->
         <div class="flex flex-col gap-1">
           <label class="text-[#112B3C] text-sm font-medium ml-1">Nome completo</label>
           <div class="bg-[#EEEEEF] rounded-lg px-4 h-12 flex items-center">
@@ -29,7 +28,6 @@
           </div>
         </div>
 
-        <!-- Email -->
         <div class="flex flex-col gap-1">
           <label class="text-[#112B3C] text-sm font-medium ml-1">E-mail</label>
           <div class="bg-[#EEEEEF] rounded-lg px-4 h-12 flex items-center">
@@ -39,7 +37,6 @@
           </div>
         </div>
 
-        <!-- CPF e Telefone -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="flex flex-col gap-1">
             <label class="text-[#112B3C] text-sm font-medium ml-1">CPF (11 dígitos)</label>
@@ -69,7 +66,6 @@
           </div>
         </div>
 
-        <!-- CNH e Status -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="flex flex-col gap-1">
             <label class="text-[#112B3C] text-sm font-medium ml-1">CNH (11 dígitos)</label>
@@ -96,7 +92,28 @@
           </div>
         </div>
 
-        <!-- Motivo da recusa -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="flex flex-col gap-1">
+            <label class="text-[#112B3C] text-sm font-medium ml-1">Modelo do Veículo</label>
+            <div class="bg-[#EEEEEF] rounded-lg px-4 h-12 flex items-center">
+              <input type="text" [(ngModel)]="motoristaEditado.vehicleModel" name="vehicleModel"
+                     placeholder="Ex: Fiat Ducato"
+                     class="w-full bg-transparent outline-none text-[#646464] font-medium placeholder:text-gray-400 placeholder:text-sm">
+            </div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-[#112B3C] text-sm font-medium ml-1">Placa do Veículo</label>
+            <div class="bg-[#EEEEEF] rounded-lg px-4 h-12 flex items-center">
+              <input type="text"
+                     name="vehiclePlate"
+                     [ngModel]="motoristaEditado.vehiclePlate"
+                     (input)="onPlateInput($event)"
+                     placeholder="ABC1D23"
+                     maxlength="7"
+                     class="w-full bg-transparent outline-none text-[#646464] font-medium placeholder:text-gray-400 placeholder:text-sm uppercase">
+            </div>
+          </div>
+        </div>
         <div class="flex flex-col gap-1" *ngIf="motoristaEditado?.registrationStatus === 'REJECTED'">
           <label class="text-[#112B3C] text-sm font-medium ml-1">Motivo da recusa <span class="text-red-500">*</span></label>
           <div class="bg-[#EEEEEF] rounded-lg px-4 py-3">

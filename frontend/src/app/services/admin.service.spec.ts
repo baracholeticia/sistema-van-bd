@@ -81,6 +81,7 @@ describe('AdminService', () => {
     it('should update driver status to APPROVED', () => {
       const mockDriver: DriverAdmin = {
         id: '123',
+        cpf: '04394190002',
         name: 'Test Driver',
         email: 'driver@test.com',
         phone: '123456789',
@@ -103,6 +104,7 @@ describe('AdminService', () => {
     it('should update driver status to REJECTED with reason', () => {
       const mockDriver: DriverAdmin = {
         id: '123',
+        cpf: '04394190002',
         name: 'Test Driver',
         email: 'driver@test.com',
         phone: '123456789',

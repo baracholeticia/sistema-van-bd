@@ -1,11 +1,20 @@
 import { Component, OnInit, signal } from '@angular/core';
-import { AdminService, DriverAdmin } from '../../services/admin.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { forkJoin } from 'rxjs'; 
+
+import { AdminService, DriverAdmin } from '../../services/admin.service'; 
+import { VehicleService } from '../../services/vehicle.service'; 
+
 import { MotoristaDeleteComponent } from './components/motorista-delete/motorista-delete.component';
 import { MotoristaAdd } from './components/motorista-add/motorista-add';
 import { MotoristaEditComponent } from './components/motorista-edit/motorista-edit.component';
 
+// Estendemos a interface do AdminService para incluir os dados do veículo
+export interface DriverAdminWithVehicle extends DriverAdmin {
+  vehicleModel?: string;
+  vehiclePlate?: string;
+}
 
 @Component({
   selector: 'app-motoristas',
@@ -16,8 +25,8 @@ import { MotoristaEditComponent } from './components/motorista-edit/motorista-ed
 export class MotoristasComponent implements OnInit {
 
   // --- VARIÁVEIS DE DADOS ---
-  listaMotoristas: DriverAdmin[] = [];
-  motoristasFiltrados = signal<DriverAdmin[]>([]);
+  listaMotoristas: DriverAdminWithVehicle[] = [];
+  motoristasFiltrados = signal<DriverAdminWithVehicle[]>([]);
   termoBusca: string = '';
   carregando = signal(false);
   erro = signal('');
@@ -26,11 +35,16 @@ export class MotoristasComponent implements OnInit {
   modalAdicionarAberto: boolean = false;
   modalEditarAberto: boolean = false;
   modalExcluirAberto: boolean = false;
+  modalVisualizarAberto: boolean = false;
 
-  // --- MOTORISTA SELECIONADO (Para Edição ou Exclusão) ---
-  motoristaSelecionado: DriverAdmin | null = null;
+  // --- MOTORISTAS SELECIONADOS ---
+  motoristaSelecionado: DriverAdminWithVehicle | null = null;
+  motoristaSelecionadoVisualizacao: DriverAdminWithVehicle | null = null;
 
-  constructor(private adminService: AdminService) { }
+  constructor(
+    private adminService: AdminService, 
+    private vehicleService: VehicleService 
+  ) { }
 
   ngOnInit(): void {
     this.carregarMotoristas();
@@ -40,15 +54,31 @@ export class MotoristasComponent implements OnInit {
   carregarMotoristas(): void {
     this.carregando.set(true);
     this.erro.set('');
-    this.adminService.listDrivers(undefined, 0, 100).subscribe({
-      next: (page) => {
-        this.listaMotoristas = page.content;
+    
+    // Dispara as duas requisições simultaneamente
+    forkJoin({
+      motoristasPage: this.adminService.listDrivers(undefined, 0, 100),
+      veiculos: this.vehicleService.findAll()
+    }).subscribe({
+      next: ({ motoristasPage, veiculos }) => {
+        
+        this.listaMotoristas = motoristasPage.content.map(mot => {
+          // Busca o veículo garantindo que letras maiúsculas/minúsculas não quebrem o cruzamento
+          const veiculo = veiculos.find(v => String(v.driverId).toLowerCase() === String(mot.id).toLowerCase());
+          
+          return {
+            ...mot,
+            vehicleModel: veiculo ? veiculo.model : 'Sem veículo',
+            vehiclePlate: veiculo ? veiculo.plate : '---'
+          };
+        });
+
         this.filtrarMotoristas();
         this.carregando.set(false);
       },
       error: (err) => {
-        console.error('Erro ao buscar motoristas:', err);
-        this.erro.set('Erro ao carregar motoristas.');
+        console.error('Erro ao buscar motoristas ou veículos:', err);
+        this.erro.set('Erro ao carregar dados.');
         this.carregando.set(false);
       }
     });
@@ -63,13 +93,14 @@ export class MotoristasComponent implements OnInit {
       this.motoristasFiltrados.set(
         this.listaMotoristas.filter(m =>
           m.name.toLowerCase().includes(termo) ||
-          m.cnh.includes(termo)
+          m.cnh.includes(termo) ||
+          (m.vehiclePlate && m.vehiclePlate.toLowerCase().includes(termo))
         )
       );
     }
   }
 
-  // --- 3. LÓGICA DO MODAL ADICIONAR ---
+  // --- 3. LÓGICA DE MODAIS ---
   abrirModalAdicionar() {
     this.modalAdicionarAberto = true;
   }
@@ -81,8 +112,7 @@ export class MotoristasComponent implements OnInit {
     }
   }
 
-  // --- 4. LÓGICA DO MODAL EDITAR ---
-  abrirModalEditar(motorista: DriverAdmin) {
+  abrirModalEditar(motorista: DriverAdminWithVehicle) {
     this.motoristaSelecionado = { ...motorista };
     this.modalEditarAberto = true;
   }
@@ -95,8 +125,7 @@ export class MotoristasComponent implements OnInit {
     }
   }
 
-  // --- 5. LÓGICA DO MODAL EXCLUIR ---
-  abrirModalExcluir(motorista: DriverAdmin) {
+  abrirModalExcluir(motorista: DriverAdminWithVehicle) {
     this.motoristaSelecionado = motorista;
     this.modalExcluirAberto = true;
   }
@@ -107,5 +136,16 @@ export class MotoristasComponent implements OnInit {
     if (sucesso) {
       this.carregarMotoristas();
     }
+  }
+
+  // --- 4. MODAL DE VISUALIZAÇÃO RÁPIDA ---
+  abrirModalVisualizar(motorista: DriverAdminWithVehicle) {
+    this.motoristaSelecionadoVisualizacao = motorista;
+    this.modalVisualizarAberto = true;
+  }
+
+  fecharModalVisualizar() {
+    this.modalVisualizarAberto = false;
+    this.motoristaSelecionadoVisualizacao = null;
   }
 }
