@@ -12,7 +12,7 @@
 
 ## Sobre o projeto
 
-Este projeto consiste no desenvolvimento de um banco de dados para uma aplicação web que implementa um sistema de gerenciamento de viagens intermunicipais por meio de veículos fretados.
+Este projeto consiste no desenvolvimento de um banco de dados para uma aplicação web que implementa um sistema de gerenciamento (lado de administrador) de viagens intermunicipais por meio de veículos fretados.
 
 O objetivo é a implementação de um banco de dados funcional como requisito para aprovação na disciplina de Banco de Dados, ministrada pela professora **Priscilla Azevedo**, na Universidade Federal do Agreste de Pernambuco - UFAPE, durante o semestre de 2025.2.
 
@@ -57,6 +57,17 @@ O objetivo é a implementação de um banco de dados funcional como requisito pa
     * **User:** `root`
     * **Password:** `root`
     * **Database:** `SistemaVan`
+
+---
+
+**O sistema está disponivel em `localhost:4200`**
+
+---
+
+## Como logar como Admistrador
+
+1. Login`admin.sistemavan@email.com`.
+2. Senha `password`.
 
 ---
 
@@ -322,15 +333,11 @@ O objetivo é a implementação de um banco de dados funcional como requisito pa
 
 ---
 
-## Como logar como Admistrador
-
-1. Login`admin.sistemavan@email.com`.
-2. Senha `password`.
-
----
 
 ## Povoamento do Banco
-O banco de dados é automaticamente populado na inicialização do container MySQL via Docker, utilizando script SQL do arquivo populate.sql. Os dados inseridos sãofícticios e representam cenários de operação do sistema, incluindo motoristas, veículos, rotas, pontos de parada, viagens, preços por trecho, clientes, reservas e avaliações, respeitando a integridade referencial entre as tabelas.
+O banco de dados é automaticamente populado na inicialização do container MySQL via Docker, utilizando script SQL do arquivo populate.sql. Os dados inseridos são fícticios e representam cenários de operação do sistema, incluindo motoristas, veículos, rotas, pontos de parada, viagens, preços por trecho, clientes, reservas e avaliações, respeitando a integridade referencial entre as tabelas.
+
+O povoamento foi gerado automaticamente por IA, simulando dados reais, e por fim passados por um refinamento manual, onde os desenvolvedores adicionaram cpf válidos para cada um dos usuários registrados, juntamente com senha criptografada.
 
 ---
 
