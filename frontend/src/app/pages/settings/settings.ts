@@ -14,7 +14,6 @@ import { ReservasService } from '../../services/reservas.service';
 })
 export class SettingsComponent implements OnInit {
   
-  // --- BARRA DE PESQUISA GERAL ---
   searchQuery = signal('');
 
   // ==========================================
@@ -107,7 +106,6 @@ export class SettingsComponent implements OnInit {
         const rotasFormatadas = dados.map(r => ({
           id: r.id,
           name: r.name,
-          // Adicionado optional chaining (?.) para evitar quebra se r.stops for indefinido
           stops: r.stops?.sort((a: any, b: any) => a.stopOrder - b.stopOrder).map((s: any) => ({
             id: s.id, name: s.city, location: s.stopLocation, order: s.stopOrder 
           })) || [],
@@ -142,7 +140,7 @@ export class SettingsComponent implements OnInit {
         this.carregarRotas();
         this.closeRouteModals();
       },
-      error: (err) => alert('Erro ao criar rota: ' + err.error)
+      error: (err) => alert('Erro ao criar rota: ' + (err.error?.message || err.error))
     });
   }
 
@@ -169,7 +167,7 @@ export class SettingsComponent implements OnInit {
         this.carregarRotas();
         this.closeRouteModals();
       },
-      error: (err) => alert('Erro ao editar rota: ' + err.error)
+      error: (err) => alert('Erro ao editar rota: ' + (err.error?.message || err.error))
     });
   }
 
@@ -189,7 +187,7 @@ export class SettingsComponent implements OnInit {
         this.carregarRotas();
         this.closeRouteModals();
       },
-      error: (err) => alert('Erro ao deletar rota: ' + err.error)
+      error: (err) => alert('Erro ao deletar rota: ' + (err.error?.message || err.error))
     });
   }
 
@@ -232,7 +230,7 @@ export class SettingsComponent implements OnInit {
 
   // ==========================================
   // LÓGICA DE INTEGRAÇÃO - VIAGENS
-  // ==========================================
+
   carregarViagens() {
     this.viagensService.getViagens().subscribe({
       next: (dados) => {
@@ -293,7 +291,7 @@ export class SettingsComponent implements OnInit {
 
   saveNewTrip() {
     if (!this.newTrip.dateTime || !this.newTrip.vehicleId || !this.newTrip.routeId || !this.newTrip.boardingStopId || !this.newTrip.dropOffStopId) {
-      return alert("Preencha todos os campos obrigatórios (incluindo as paradas)!");
+      return alert("Preencha todos os campos obrigatórios!");
     }
     
     const [dataParte, horaParte] = this.newTrip.dateTime.split('T');
@@ -312,7 +310,7 @@ export class SettingsComponent implements OnInit {
         this.carregarViagens(); 
         this.closeTripModals(); 
       },
-      error: (err) => alert('Erro: ' + (err.error || 'Verifique se os pontos de subida e descida pertencem à rota correta.'))
+      error: (err) => alert('Erro: ' + (err.error?.message || err.error))
     });
   }
 
@@ -339,18 +337,27 @@ export class SettingsComponent implements OnInit {
     
     const payload = {
       departureTime: `${dia}/${mes}/${ano} ${horaParte}`,
-      status: this.selectedTrip.status,
+      status: this.selectedTrip.status || 'SCHEDULED',
       vehicleId: this.selectedTrip.vehicleId,
       routeId: this.selectedTrip.routeId,
-      prices: [{ boardingStopId: this.selectedTrip.boardingStopId, dropOffStopId: this.selectedTrip.dropOffStopId, price: this.selectedTrip.price }]
+      prices: [{ 
+        boardingStopId: this.selectedTrip.boardingStopId, 
+        dropOffStopId: this.selectedTrip.dropOffStopId, 
+        price: this.selectedTrip.price 
+      }]
     };
 
     this.viagensService.updateViagem(this.selectedTrip.id, payload).subscribe({
       next: () => { 
         this.carregarViagens(); 
         this.closeTripModals(); 
+        alert('Alterações salvas com sucesso!');
       },
-      error: (err) => alert('Erro ao editar: ' + (err.error || 'Verifique os dados.'))
+      error: (err) => {
+        console.error('Erro na requisição:', err);
+        const msg = err.error?.message || err.error || 'Verifique o console do backend.';
+        alert('Erro ao editar: ' + msg);
+      }
     });
   }
 
@@ -365,7 +372,7 @@ export class SettingsComponent implements OnInit {
         this.carregarViagens(); 
         this.closeTripModals(); 
       },
-      error: (err) => alert('Erro ao cancelar a viagem.')
+      error: (err) => alert('Erro ao cancelar a viagem: ' + (err.error?.message || err.error))
     });
   }
 
