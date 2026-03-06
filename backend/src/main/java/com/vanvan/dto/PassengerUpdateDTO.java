@@ -9,5 +9,7 @@ public record PassengerUpdateDTO(
         @Size(min = 2, max = 120) String name,
         @Email String email,
         @Pattern(regexp = "\\d{10,11}") String phone,
-        @CPF String cpf
+        @CPF String cpf,
+        String password, // Adicionado (Opcional)
+        String birthDate
 ) {}

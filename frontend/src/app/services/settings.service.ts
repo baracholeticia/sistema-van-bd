@@ -40,7 +40,7 @@ export class SettingsService {
     return this.http.get<any[]>(`${this.apiUrl}/routes`);
   }
 
-  // Criar nova viagem (POST)
+  // Criar nova viagem (POST)s
   addJourney(journey: any): Observable<TravelResponseDTO> {
     return this.http.post<TravelResponseDTO>(this.apiUrl, journey);
   }

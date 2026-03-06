@@ -1,376 +1,435 @@
-<div style="width: 1270px; padding-left: 10px; padding-right: 10px; border-radius: 24px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 20px; display: inline-flex; padding-bottom: 60px;">
+<div class="w-full h-full bg-[#FAFAFA] p-5">
   
-  <div style="align-self: stretch; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 8px; display: flex">
-    <div style="align-self: stretch; justify-content: center; align-items: center; gap: 20px; display: inline-flex">
-      <div style="color: #112B3C; font-size: 64px; font-family: 'Google Sans Flex'; font-weight: 700;">Gestão do Sistema</div>
-      <div style="flex: 1 1 0; height: 51px; justify-content: flex-start; align-items: center; gap: 20px; display: flex">
-        <div style="flex: 1 1 0; align-self: stretch; padding-left: 19px; padding-right: 19px; background: #EEEEEF; border-radius: 46px; justify-content: flex-start; align-items: center; gap: 14px; display: flex">
-          <img src="assets/icons/search-normal.svg" style="width: 24px; height: 24px; opacity: 0.7">
-          <input type="text" [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" placeholder="Pesquisar por Rota, Motorista ou Placa" style="border: none; background: transparent; outline: none; width: 100%; color: #646464; font-size: 20px; font-family: 'Google Sans Flex'; font-weight: 500;">
-        </div>
+  <div class="flex flex-col items-start gap-8 mb-10">
+    <div class="w-full flex justify-between items-center gap-5">
+      <h1 class="text-[#112B3C] text-[64px] font-bold tracking-narrow">Gestão do Sistema</h1>
+      <div class="flex-1 max-w-lg h-[51px] bg-[#EEEEEF] rounded-full px-6 flex items-center gap-4">
+        <img src="assets/icons/search-normal.svg" class="w-6 h-6 opacity-70">
+        <input type="text" [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" placeholder="Pesquisar por Rota, Motorista ou Placa" class="border-none bg-transparent outline-none w-full text-[#646464] text-xl font-medium">
       </div>
     </div>
   </div>
 
-  <div style="align-self: stretch; flex-direction: column; gap: 8px; display: flex; margin-top: 40px">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-      <div style="color: #112B3C; font-size: 40px; font-family: 'Google Sans Flex'; font-weight: 700">Rotas e Trechos</div>
-      <div (click)="openAddRouteModal()" style="cursor: pointer; padding: 12px 24px; background: #F66B0E; border-radius: 8px; color: white; font-family: 'Google Sans Flex'; font-weight: 700; display: flex; align-items: center; gap: 8px; box-shadow: 0px 4px 10px rgba(246, 107, 14, 0.30);">
+  <div class="flex flex-col gap-4 mb-12">
+    <div class="flex justify-between items-center">
+      <h2 class="text-[#112B3C] text-[40px] font-bold">Rotas e Trechos</h2>
+      <button (click)="openAddRouteModal()" class="cursor-pointer px-6 py-3 bg-[#F66B0E] rounded-lg text-white font-bold flex items-center gap-2 shadow-md hover:brightness-110 transition">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
         Nova Rota
-      </div>
+      </button>
     </div>
     
-    <div style="align-self: stretch; padding: 24px; background: #EEEEEF; border-radius: 24px; flex-direction: column; gap: 10px; display: flex">
-      <div style="align-self: stretch; padding: 14px 30px; background: #FAFAFA; border-radius: 12px; display: flex; align-items: center; justify-content: space-between;">
-        <div style="flex: 2; color: #112B3C; font-size: 18px; font-family: 'Google Sans Flex'; font-weight: 700">Nome da Rota</div>
-        <div style="flex: 2; color: #112B3C; font-size: 18px; font-family: 'Google Sans Flex'; font-weight: 700">Pontos de Parada</div>
-        <div style="flex: 2; color: #112B3C; font-size: 18px; font-family: 'Google Sans Flex'; font-weight: 700">Trechos Definidos</div>
-        <div style="width: 140px; color: #112B3C; font-size: 18px; font-family: 'Google Sans Flex'; font-weight: 700; text-align: right">Ações</div>
+    <div class="bg-[#EEEEEF] rounded-[24px] p-6 flex flex-col gap-3">
+      <div class="bg-[#FAFAFA] rounded-xl px-8 py-3 flex items-center justify-between">
+        <div class="flex-[2] text-[#112B3C] text-lg font-bold">Nome da Rota</div>
+        <div class="flex-[2] text-[#112B3C] text-lg font-bold">Pontos de Parada</div>
+        <div class="flex-[2] text-[#112B3C] text-lg font-bold">Trechos Definidos</div>
+        <div class="w-[140px] text-[#112B3C] text-lg font-bold text-right">Ações</div>
       </div>
 
       @for (route of allRoutes(); track route.id) {
-        <div style="align-self: stretch; padding: 14px 30px; display: flex; align-items: center; justify-content: space-between;">
-          <div style="flex: 2; color: #646464; font-size: 16px; font-family: 'Google Sans Flex'; font-weight: 700;">{{ route.name }}</div>
-          <div style="flex: 2; color: #646464; font-size: 16px; font-family: 'Google Sans Flex'; font-weight: 500;">{{ route.stops.length }} paradas</div>
-          <div style="flex: 2; color: #646464; font-size: 16px; font-family: 'Google Sans Flex';">{{ route.segments.length }} trechos configurados</div>
+        <div class="px-8 py-3 flex items-center justify-between border-b border-[#646464]/10">
+          <div class="flex-[2] text-[#646464] text-base font-bold">{{ route.name }}</div>
+          <div class="flex-[2] text-[#646464] text-base font-medium">{{ route.stops.length }} paradas</div>
+          <div class="flex-[2] text-[#646464] text-base">Viagens gerenciam os preços</div>
           
-          <div style="width: 140px; justify-content: flex-end; align-items: center; gap: 16px; display: flex">
-            <div (click)="openRouteDetails(route)" style="cursor: pointer; color: #F66B0E; display: flex; align-items: center;" title="Ver Trechos e Preços">
+          <div class="w-[140px] flex justify-end items-center gap-4">
+            <button (click)="openRouteDetails(route)" class="text-[#F66B0E] hover:scale-110 transition" title="Ver Paradas">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-            </div>
-            <div (click)="openEditRouteModal(route)" style="cursor: pointer; width: 24px; height: 24px; background: #646464; mask-image: url('assets/icons/edit.svg'); -webkit-mask-image: url('assets/icons/edit.svg'); mask-size: contain; mask-repeat: no-repeat;" title="Editar Rota"></div>
-            <div (click)="openDeleteRouteModal(route)" style="cursor: pointer; width: 24px; height: 24px; background: #646464; mask-image: url('assets/icons/trash.svg'); -webkit-mask-image: url('assets/icons/trash.svg'); mask-size: contain; mask-repeat: no-repeat;" title="Excluir Rota"></div>
+            </button>
+            <button (click)="openEditRouteModal(route)" class="w-6 h-6 hover:scale-110 transition" style="background: #646464; mask-image: url('assets/icons/edit.svg'); -webkit-mask-image: url('assets/icons/edit.svg'); mask-size: contain; mask-repeat: no-repeat;" title="Editar Rota"></button>
+            <button (click)="openDeleteRouteModal(route)" class="w-6 h-6 hover:scale-110 transition" style="background: #646464; mask-image: url('assets/icons/trash.svg'); -webkit-mask-image: url('assets/icons/trash.svg'); mask-size: contain; mask-repeat: no-repeat;" title="Excluir Rota"></button>
           </div>
         </div>
-        <div style="align-self: stretch; height: 1px; background: #646464; opacity: 0.1"></div>
       }
       
       @if (allRoutes().length === 0) {
-        <div style="padding: 20px; text-align: center; color: #999; font-family: 'Google Sans Flex';">Nenhuma rota cadastrada encontrada.</div>
+        <div class="p-5 text-center text-[#999]">Nenhuma rota cadastrada encontrada.</div>
       }
     </div>
   </div>
 
-  <div style="align-self: stretch; flex-direction: column; gap: 8px; display: flex; margin-top: 40px">
-    <div style="color: #112B3C; font-size: 40px; font-family: 'Google Sans Flex'; font-weight: 700">Reservas</div>
+  <div class="flex flex-col gap-4 mb-12">
+    <h2 class="text-[#112B3C] text-[40px] font-bold">Reservas</h2>
     
-    <div style="align-self: stretch; padding: 24px; background: #EEEEEF; border-radius: 24px; flex-direction: column; gap: 10px; display: flex">
-      <div style="align-self: stretch; padding: 14px 30px; background: #FAFAFA; border-radius: 12px; display: flex; align-items: center; justify-content: space-between;">
-        <div style="flex: 2; color: #112B3C; font-size: 18px; font-family: 'Google Sans Flex'; font-weight: 700">Cliente</div>
-        <div style="flex: 1.5; color: #112B3C; font-size: 18px; font-family: 'Google Sans Flex'; font-weight: 700">Motorista (Viagem)</div>
-        <div style="flex: 2; color: #112B3C; font-size: 18px; font-family: 'Google Sans Flex'; font-weight: 700">Rota / Viagem</div>
-        <div style="width: 140px; color: #112B3C; font-size: 18px; font-family: 'Google Sans Flex'; font-weight: 700; text-align: center">Ações de Status</div>
+    <div class="bg-[#EEEEEF] rounded-[24px] p-6 flex flex-col gap-3">
+      <div class="bg-[#FAFAFA] rounded-xl px-8 py-3 flex items-center justify-between">
+        <div class="flex-[2] text-[#112B3C] text-lg font-bold">Cliente</div>
+        <div class="flex-[1.5] text-[#112B3C] text-lg font-bold">Motorista (Viagem)</div>
+        <div class="flex-[2] text-[#112B3C] text-lg font-bold">Rota / Viagem</div>
+        <div class="w-[140px] text-[#112B3C] text-lg font-bold text-center">Ações de Status</div>
       </div>
 
       @for (res of reservations(); track res.id) {
-        <div style="align-self: stretch; padding: 14px 30px; display: flex; align-items: center; justify-content: space-between;">
-          
-          <div style="flex: 2; display: flex; align-items: center; gap: 12px;">
-            <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #D9D9D9; display: flex; justify-content: center; align-items: center; color: #fff;">
+        <div class="px-8 py-3 flex items-center justify-between border-b border-[#646464]/10">
+          <div class="flex-[2] flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-[#D9D9D9] flex justify-center items-center text-white">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#999"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
             </div>
-            <div style="color: #646464; font-size: 16px; font-family: 'Google Sans Flex'; font-weight: 700;">{{ res.clientName }}</div>
+            <div class="text-[#646464] text-base font-bold">{{ res.clientName }}</div>
           </div>
-
-          <div style="flex: 1.5; color: #646464; font-size: 16px; font-family: 'Google Sans Flex'; font-weight: 500;">{{ res.driverName }}</div>
-          <div style="flex: 2; color: #646464; font-size: 16px; font-family: 'Google Sans Flex';">{{ res.tripName }}</div>
+          <div class="flex-[1.5] text-[#646464] text-base font-medium">{{ res.driverName }}</div>
+          <div class="flex-[2] text-[#646464] text-base">{{ res.tripName }}</div>
           
-          <div style="width: 140px; display: flex; justify-content: center;">
+          <div class="w-[140px] flex justify-center">
             <button (click)="toggleReservationStatus(res)" 
                     [style.background]="res.status === 'Confirmada' ? '#2E7D32' : '#D32F2F'"
-                    style="cursor: pointer; padding: 8px 16px; border-radius: 8px; color: white; border: none; font-family: 'Google Sans Flex'; font-weight: 700; font-size: 14px; width: 120px; transition: background 0.2s;" 
+                    class="cursor-pointer py-2 px-4 rounded-lg text-white border-none font-bold text-sm w-[120px] transition hover:opacity-90 shadow-sm" 
                     title="Clique para alterar">
               {{ res.status }}
             </button>
           </div>
         </div>
-        <div style="align-self: stretch; height: 1px; background: #646464; opacity: 0.1"></div>
       }
       
       @if (reservations().length === 0) {
-        <div style="padding: 20px; text-align: center; color: #999; font-family: 'Google Sans Flex';">Nenhuma reserva encontrada.</div>
+        <div class="p-5 text-center text-[#999]">Nenhuma reserva encontrada.</div>
       }
     </div>
   </div>
 
-
-  <div style="align-self: stretch; flex-direction: column; gap: 8px; display: flex; margin-top: 40px">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-      <div style="color: #112B3C; font-size: 40px; font-family: 'Google Sans Flex'; font-weight: 700">Viagens Cadastradas</div>
-      <div (click)="openAddTripModal()" style="cursor: pointer; min-width: 51px; height: 51px; background: #F66B0E; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0px 4px 10px rgba(246, 107, 14, 0.30);" title="Adicionar Nova Viagem">
-        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="white"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-      </div>
+  <div class="flex flex-col gap-4">
+    <div class="flex justify-between items-center">
+      <h2 class="text-[#112B3C] text-[40px] font-bold">Viagens Cadastradas</h2>
+      <button (click)="openAddTripModal()" class="w-[51px] h-[51px] bg-[#F66B0E] rounded-full flex items-center justify-center shadow-md hover:scale-105 transition" title="Adicionar Nova Viagem">
+        <span class="text-white text-3xl font-light leading-none mb-1">+</span>
+      </button>
     </div>
     
-    <div style="align-self: stretch; padding: 24px; background: #EEEEEF; border-radius: 24px; flex-direction: column; gap: 10px; display: flex">
-      <div style="align-self: stretch; padding: 14px 30px; background: #FAFAFA; border-radius: 12px; display: flex; align-items: center; justify-content: space-between;">
-        <div style="flex: 1.5; color: #112B3C; font-size: 18px; font-family: 'Google Sans Flex'; font-weight: 700">Motorista</div>
-        <div style="flex: 1.5; color: #112B3C; font-size: 18px; font-family: 'Google Sans Flex'; font-weight: 700">Data e Hora</div>
-        <div style="flex: 2; color: #112B3C; font-size: 18px; font-family: 'Google Sans Flex'; font-weight: 700">Ponto de Subida</div>
-        <div style="flex: 2; color: #112B3C; font-size: 18px; font-family: 'Google Sans Flex'; font-weight: 700">Ponto de Descida</div>
-        <div style="flex: 1; color: #112B3C; font-size: 18px; font-family: 'Google Sans Flex'; font-weight: 700; text-align: center">Status</div>
-        <div style="width: 140px; color: #112B3C; font-size: 18px; font-family: 'Google Sans Flex'; font-weight: 700; text-align: right">Ações</div>
+    <div class="bg-[#EEEEEF] rounded-[24px] p-6 flex flex-col gap-3">
+      <div class="bg-[#FAFAFA] rounded-xl px-8 py-3 flex items-center justify-between">
+        <div class="flex-[1.5] text-[#112B3C] text-lg font-bold">Motorista</div>
+        <div class="flex-[1.5] text-[#112B3C] text-lg font-bold">Data e Hora</div>
+        <div class="flex-[2] text-[#112B3C] text-lg font-bold">Ponto de Subida</div>
+        <div class="flex-[2] text-[#112B3C] text-lg font-bold">Ponto de Descida</div>
+        <div class="flex-1 text-[#112B3C] text-lg font-bold text-center">Status</div>
+        <div class="w-[140px] text-[#112B3C] text-lg font-bold text-right">Ações</div>
       </div>
 
       @for (trip of trips(); track trip.id) {
-        <div style="align-self: stretch; padding: 14px 30px; display: flex; align-items: center; justify-content: space-between;">
-          <div style="flex: 1.5; color: #646464; font-size: 16px; font-family: 'Google Sans Flex'; font-weight: 700;">{{ trip.driverName }}</div>
-          <div style="flex: 1.5; color: #646464; font-size: 16px; font-family: 'Google Sans Flex'; font-weight: 500;">{{ trip.dateTime | date:'dd/MM/yyyy HH:mm' }}</div>
-          <div style="flex: 2; color: #646464; font-size: 16px; font-family: 'Google Sans Flex';">{{ trip.pickupPoint }}</div>
-          <div style="flex: 2; color: #646464; font-size: 16px; font-family: 'Google Sans Flex';">{{ trip.dropoffPoint }}</div>
-          <div style="flex: 1; text-align: center; font-family: 'Google Sans Flex'; font-weight: 700;">
+        <div class="px-8 py-3 flex items-center justify-between border-b border-[#646464]/10">
+          <div class="flex-[1.5] text-[#646464] text-base font-bold">{{ trip.driverName }}</div>
+          <div class="flex-[1.5] text-[#646464] text-base font-medium">{{ trip.dateTime | date:'dd/MM/yyyy HH:mm' }}</div>
+          <div class="flex-[2] text-[#646464] text-base">{{ trip.pickupPoint }}</div>
+          <div class="flex-[2] text-[#646464] text-base">{{ trip.dropoffPoint }}</div>
+          <div class="flex-1 text-center font-bold">
              <span [style.color]="trip.status === 'Cancelada' ? '#D32F2F' : '#2E7D32'">{{ trip.status }}</span>
           </div>
-          <div style="width: 140px; justify-content: flex-end; align-items: center; gap: 16px; display: flex">
-            <div (click)="openReviewsModal(trip)" style="cursor: pointer; color: #F66B0E; display: flex; align-items: center;" title="Ver Avaliações">
+          <div class="w-[140px] flex justify-end items-center gap-4">
+            <button (click)="openReviewsModal(trip)" class="text-[#F66B0E] hover:scale-110 transition" title="Ver Avaliações">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-            </div>
-            <div (click)="openEditTripModal(trip)" style="cursor: pointer; width: 24px; height: 24px; background: #646464; mask-image: url('assets/icons/edit.svg'); -webkit-mask-image: url('assets/icons/edit.svg'); mask-size: contain; mask-repeat: no-repeat;" title="Editar Viagem"></div>
-            <div (click)="openDeleteTripModal(trip)" style="cursor: pointer; width: 24px; height: 24px; background: #646464; mask-image: url('assets/icons/trash.svg'); -webkit-mask-image: url('assets/icons/trash.svg'); mask-size: contain; mask-repeat: no-repeat;" title="Excluir Viagem"></div>
+            </button>
+            <button (click)="openEditTripModal(trip)" class="w-6 h-6 hover:scale-110 transition" style="background: #646464; mask-image: url('assets/icons/edit.svg'); -webkit-mask-image: url('assets/icons/edit.svg'); mask-size: contain; mask-repeat: no-repeat;" title="Editar Viagem"></button>
+            <button (click)="openDeleteTripModal(trip)" class="w-6 h-6 hover:scale-110 transition" style="background: #646464; mask-image: url('assets/icons/trash.svg'); -webkit-mask-image: url('assets/icons/trash.svg'); mask-size: contain; mask-repeat: no-repeat;" title="Cancelar Viagem"></button>
           </div>
         </div>
-        <div style="align-self: stretch; height: 1px; background: #646464; opacity: 0.1"></div>
       }
       
       @if (trips().length === 0) {
-        <div style="padding: 20px; text-align: center; color: #999; font-family: 'Google Sans Flex';">Nenhuma viagem cadastrada encontrada.</div>
+        <div class="p-5 text-center text-[#999]">Nenhuma viagem cadastrada encontrada.</div>
       }
     </div>
   </div>
 
-
   @if (showAddRouteModal || showEditRouteModal) {
-    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;">
-        <div style="width: 800px; max-height: 90vh; overflow-y: auto; padding: 32px; background: #FAFAFA; border-radius: 24px; flex-direction: column; gap: 24px; display: flex">
-            <div style="color: #112B3C; font-size: 32px; font-family: 'Google Sans Flex'; font-weight: 700">{{ showAddRouteModal ? 'Nova Rota' : 'Editar Rota' }}</div>
+    <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex justify-center items-center">
+        <div class="bg-[#FAFAFA] rounded-3xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-8 shadow-2xl flex flex-col gap-6">
+            <h2 class="text-[#112B3C] text-3xl font-bold">{{ showAddRouteModal ? 'Nova Rota' : 'Editar Rota' }}</h2>
             
             @let r = showAddRouteModal ? newRoute : selectedRoute;
 
-            <div style="display: flex; flex-direction: column; gap: 8px;">
-              <label style="color: #112B3C; font-size: 16px; font-weight: 700; font-family: 'Google Sans Flex';">Nome da Rota</label>
-              <input type="text" [(ngModel)]="r.name" placeholder="Ex: Recife - Campina Grande" style="padding: 12px; border-radius: 8px; border: none; background: #EEEEEF; outline: none; font-family: 'Google Sans Flex'; font-size: 16px;">
+            <div class="flex flex-col gap-2">
+              <label class="text-[#112B3C] font-bold">Nome da Rota</label>
+              <input type="text" [(ngModel)]="r.name" placeholder="Ex: Recife - Campina Grande" class="p-3 bg-[#EEEEEF] border-none rounded-lg outline-none w-full">
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 12px;">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <label style="color: #112B3C; font-size: 16px; font-weight: 700; font-family: 'Google Sans Flex';">1. Pontos de Parada (Cidades/Locais)</label>
-                <button (click)="showAddRouteModal ? addStop() : addStopEdit()" style="cursor: pointer; padding: 8px 16px; background: #557D96; border-radius: 8px; color: white; border: none; font-family: 'Google Sans Flex'; font-weight: 700;">+ Adicionar Ponto</button>
+            <div class="flex flex-col gap-3 mt-2">
+              <div class="flex justify-between items-center">
+                <label class="text-[#112B3C] font-bold">Pontos de Parada</label>
+                <button (click)="showAddRouteModal ? addStop() : addStopEdit()" class="bg-[#557D96] text-white px-4 py-2 rounded-lg font-bold hover:brightness-110">+ Ponto</button>
               </div>
               
               @for (stop of r.stops; track $index) {
-                <div style="display: flex; gap: 10px; align-items: center;">
-                  <div style="width: 30px; height: 30px; background: #112B3C; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-family: 'Google Sans Flex';">{{ $index + 1 }}</div>
-                  <input type="text" [(ngModel)]="stop.name" placeholder="Nome da cidade/ponto" style="flex: 1; padding: 10px; border-radius: 8px; border: none; background: #EEEEEF; outline: none; font-family: 'Google Sans Flex';">
+                <div class="flex gap-3 items-center">
+                  <div class="w-8 h-8 rounded-full bg-[#112B3C] text-white flex justify-center items-center font-bold">{{ $index + 1 }}</div>
+                  <input type="text" [(ngModel)]="stop.name" placeholder="Nome da cidade" class="flex-1 p-3 bg-[#EEEEEF] rounded-lg outline-none border-none">
                   @if (r.stops.length > 1) {
-                    <button (click)="showAddRouteModal ? removeStop($index) : removeStopEdit($index)" style="background: none; border: none; color: #D32F2F; cursor: pointer; font-size: 24px; line-height: 1;">&times;</button>
+                    <button (click)="showAddRouteModal ? removeStop($index) : removeStopEdit($index)" class="text-[#D32F2F] text-2xl font-bold hover:scale-110">&times;</button>
                   }
                 </div>
               }
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <label style="color: #112B3C; font-size: 16px; font-weight: 700; font-family: 'Google Sans Flex';">2. Trechos e Preços</label>
-                <button (click)="showAddRouteModal ? addSegment() : addSegmentEdit()" style="cursor: pointer; padding: 8px 16px; background: #557D96; border-radius: 8px; color: white; border: none; font-family: 'Google Sans Flex'; font-weight: 700;">+ Adicionar Trecho</button>
-              </div>
-
-              @for (seg of r.segments; track $index) {
-                <div style="display: flex; gap: 10px; align-items: center; background: #EEEEEF; padding: 16px; border-radius: 8px;">
-                  <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
-                    <label style="font-size: 12px; color: #646464; font-weight: 600;">Origem</label>
-                    <select [(ngModel)]="seg.origin" style="padding: 10px; border-radius: 6px; border: none; outline: none; font-family: 'Google Sans Flex';">
-                      <option value="">Selecione...</option>
-                      @for (s of r.stops; track $index) {
-                        @if (s.name) { <option [value]="s.name">{{ s.name }}</option> }
-                      }
-                    </select>
-                  </div>
-                  <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
-                    <label style="font-size: 12px; color: #646464; font-weight: 600;">Destino</label>
-                    <select [(ngModel)]="seg.destination" style="padding: 10px; border-radius: 6px; border: none; outline: none; font-family: 'Google Sans Flex';">
-                      <option value="">Selecione...</option>
-                      @for (s of r.stops; track $index) {
-                        @if (s.name) { <option [value]="s.name">{{ s.name }}</option> }
-                      }
-                    </select>
-                  </div>
-                  <div style="flex: 0.8; display: flex; flex-direction: column; gap: 4px;">
-                    <label style="font-size: 12px; color: #646464; font-weight: 600;">Preço (R$)</label>
-                    <input type="number" step="0.01" [(ngModel)]="seg.price" placeholder="0.00" style="padding: 10px; border-radius: 6px; border: none; outline: none; font-family: 'Google Sans Flex';">
-                  </div>
-                  @if (r.segments.length > 1) {
-                    <button (click)="showAddRouteModal ? removeSegment($index) : removeSegmentEdit($index)" style="background: none; border: none; color: #D32F2F; cursor: pointer; font-size: 24px; margin-top: 18px; line-height: 1;">&times;</button>
-                  }
-                </div>
-              }
-            </div>
-
-            <div style="justify-content: flex-end; gap: 16px; display: flex; margin-top: 20px;">
-                <div (click)="closeRouteModals()" style="cursor: pointer; padding: 12px 40px; background: #EEEEEF; border-radius: 8px; color: #557D96; font-family: 'Google Sans Flex'; font-weight: 700; text-transform: uppercase">Cancelar</div>
-                <div (click)="showAddRouteModal ? saveNewRoute() : saveRouteEdit()" style="cursor: pointer; padding: 12px 40px; background: #F66B0E; border-radius: 8px; color: white; font-family: 'Google Sans Flex'; font-weight: 700; text-transform: uppercase">Salvar Rota</div>
+            <div class="flex justify-end gap-4 mt-6">
+                <button (click)="closeRouteModals()" class="px-8 py-3 bg-[#EEEEEF] text-[#557D96] font-bold rounded-lg uppercase hover:bg-gray-300 transition">Cancelar</button>
+                <button (click)="showAddRouteModal ? saveNewRoute() : saveRouteEdit()" class="px-8 py-3 bg-[#F66B0E] text-white font-bold rounded-lg uppercase shadow-md hover:brightness-110 transition">Salvar Rota</button>
             </div>
         </div>
     </div>
   }
 
   @if (showRouteDetailsModal) {
-    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;">
-        <div style="width: 700px; padding: 32px; background: #FAFAFA; border-radius: 24px; flex-direction: column; gap: 24px; display: flex">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <div style="color: #112B3C; font-size: 32px; font-family: 'Google Sans Flex'; font-weight: 700">{{ selectedRoute?.name }}</div>
-              <button (click)="closeRouteModals()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #646464;">&times;</button>
+    <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex justify-center items-center">
+        <div class="bg-[#FAFAFA] rounded-3xl w-full max-w-2xl p-8 shadow-2xl flex flex-col gap-6">
+            <div class="flex justify-between items-center">
+              <h2 class="text-[#112B3C] text-3xl font-bold">{{ selectedRoute?.name }}</h2>
+              <button (click)="closeRouteModals()" class="text-3xl text-[#646464] hover:text-black">&times;</button>
             </div>
             
-            <div style="display: flex; flex-direction: column; gap: 12px;">
-              <div style="color: #112B3C; font-size: 18px; font-family: 'Google Sans Flex'; font-weight: 700">Tabela de Preços Cadastrada:</div>
-              @for (seg of selectedRoute?.segments; track $index) {
-                <div style="display: flex; justify-content: space-between; padding: 12px 20px; background: #EEEEEF; border-radius: 8px;">
-                  <div style="color: #646464; font-size: 16px; font-family: 'Google Sans Flex';">
-                    <b>{{ seg.origin }}</b> &nbsp;&rarr;&nbsp; <b>{{ seg.destination }}</b>
-                  </div>
-                  <div style="color: #F66B0E; font-size: 16px; font-family: 'Google Sans Flex'; font-weight: 700;">
-                    R$ {{ seg.price | number:'1.2-2' }}
-                  </div>
+            <div class="flex flex-col gap-3">
+              <h3 class="text-[#112B3C] text-xl font-bold">Paradas desta rota:</h3>
+              @for (s of selectedRoute?.stops; track $index) {
+                <div class="bg-[#EEEEEF] p-4 rounded-xl text-[#646464] text-lg">
+                  <span class="font-bold">Parada {{ s.order }}:</span> {{ s.name }}
                 </div>
               }
-              @if (!selectedRoute?.segments || selectedRoute?.segments.length === 0) {
-                <div style="color: #999; font-style: italic;">Nenhum trecho configurado.</div>
+              @if (!selectedRoute?.stops || selectedRoute?.stops.length === 0) {
+                <p class="text-[#999] italic">Nenhuma parada configurada.</p>
               }
             </div>
             
-            <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
-              <div (click)="closeRouteModals()" style="cursor: pointer; padding: 12px 40px; background: #EEEEEF; border-radius: 8px; color: #557D96; font-family: 'Google Sans Flex'; font-weight: 700; text-transform: uppercase">Fechar</div>
+            <div class="flex justify-end mt-4">
+              <button (click)="closeRouteModals()" class="px-8 py-3 bg-[#EEEEEF] text-[#557D96] font-bold rounded-lg uppercase hover:bg-gray-300 transition">Fechar</button>
             </div>
         </div>
     </div>
   }
 
   @if (showDeleteRouteModal) {
-    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;">
-        <div style="width: 800px; padding: 32px; background: #FAFAFA; border-radius: 24px; flex-direction: column; gap: 24px; display: flex">
-            <div style="color: #112B3C; font-size: 40px; font-family: 'Google Sans Flex'; font-weight: 700">Excluir Rota</div>
-            <div style="flex-direction: column; gap: 10px; display: flex">
-                <div style="color: #112B3C; font-size: 20px; font-family: 'Google Sans Flex'; font-weight: 700">Tem certeza que deseja excluir a rota "{{ selectedRoute?.name }}"?</div>
-                <div style="align-self: flex-start; padding: 9px 24px; background: #EEEEEF; border-radius: 12px; color: #D32F2F; font-size: 14px; font-weight: 700; font-family: 'Google Sans Flex'; text-transform: uppercase">Todos os trechos e paradas serão perdidos.</div>
+    <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex justify-center items-center">
+        <div class="bg-[#FAFAFA] rounded-3xl w-full max-w-2xl p-8 shadow-2xl flex flex-col gap-6">
+            <h2 class="text-[#112B3C] text-4xl font-bold">Excluir Rota</h2>
+            <div class="flex flex-col gap-2">
+                <p class="text-[#112B3C] text-xl font-bold">Tem certeza que deseja excluir a rota "{{ selectedRoute?.name }}"?</p>
+                <div class="bg-[#EEEEEF] self-start px-4 py-2 rounded-lg"><span class="text-[#D32F2F] font-bold text-sm uppercase">Todos os trechos e paradas serão perdidos.</span></div>
             </div>
-            <div style="justify-content: flex-end; gap: 16px; display: flex; margin-top: 16px;">
-                <div (click)="closeRouteModals()" style="cursor: pointer; padding: 12px 40px; background: #EEEEEF; border-radius: 8px; color: #557D96; font-family: 'Google Sans Flex'; font-weight: 700; text-transform: uppercase">Cancelar</div>
-                <div (click)="deleteRoute()" style="cursor: pointer; padding: 12px 40px; background: #D32F2F; border-radius: 8px; color: white; font-family: 'Google Sans Flex'; font-weight: 700; text-transform: uppercase">Excluir</div>
-            </div>
-        </div>
-    </div>
-  }
-
-  @if (showReviewsModal) {
-    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;">
-        <div style="width: 800px; max-height: 80vh; overflow-y: auto; padding: 32px; background: #FAFAFA; border-radius: 24px; flex-direction: column; gap: 24px; display: flex">
-            
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <div style="color: #112B3C; font-size: 32px; font-family: 'Google Sans Flex'; font-weight: 700">Avaliações da Viagem</div>
-              <button (click)="closeTripModals()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #646464;">&times;</button>
-            </div>
-            
-            <div style="color: #646464; font-size: 16px; font-family: 'Google Sans Flex'; font-weight: 500; margin-bottom: 10px;">Ref: {{selectedTrip?.tripName}}</div>
-
-            <div style="display: flex; flex-direction: column; gap: 20px;">
-              @for (review of selectedTrip?.reviews; track review.id) {
-                <div style="display: flex; gap: 16px; border-bottom: 1px solid #E0E0E0; padding-bottom: 16px;">
-                  <div style="width: 50px; height: 50px; border-radius: 50%; background-color: #D9D9D9; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 20px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#999"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                  </div>
-                  <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                      <span style="color: #112B3C; font-size: 16px; font-family: 'Google Sans Flex'; font-weight: 700">{{ review.clientName }}</span>
-                      <div style="display: flex; align-items: center; gap: 16px;">
-                        <span style="color: #F66B0E; font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 4px;">{{ review.rating }} <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></span>
-                        <div (click)="deleteReview(review.id)" style="cursor: pointer; color: #D32F2F; display: flex; align-items: center;" title="Excluir Avaliação">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                        </div>
-                      </div>
-                    </div>
-                    <div style="color: #646464; font-size: 14px; font-family: 'Google Sans Flex';">{{ review.comment }}</div>
-                  </div>
-                </div>
-              }
-              @if (!selectedTrip?.reviews || selectedTrip?.reviews.length === 0) {
-                <div style="text-align: center; color: #999; padding: 20px; font-family: 'Google Sans Flex';">Esta viagem ainda não possui avaliações.</div>
-              }
-            </div>
-            
-            <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
-              <div (click)="closeTripModals()" style="cursor: pointer; padding: 12px 40px; background: #EEEEEF; border-radius: 8px; color: #557D96; font-family: 'Google Sans Flex'; font-weight: 700; text-transform: uppercase">Fechar</div>
+            <div class="flex justify-end gap-4 mt-6">
+                <button (click)="closeRouteModals()" class="px-8 py-3 bg-[#EEEEEF] text-[#557D96] font-bold rounded-lg uppercase hover:bg-gray-300 transition">Cancelar</button>
+                <button (click)="deleteRoute()" class="px-8 py-3 bg-[#D32F2F] text-white font-bold rounded-lg uppercase shadow-md hover:brightness-110 transition">Excluir</button>
             </div>
         </div>
     </div>
   }
 
-  @if (showEditTripModal || showAddTripModal) {
-    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;">
-        <div style="width: 800px; padding: 32px; background: #FAFAFA; border-radius: 24px; flex-direction: column; gap: 20px; display: flex">
-            <div style="color: #112B3C; font-size: 32px; font-family: 'Google Sans Flex'; font-weight: 700">{{ showAddTripModal ? 'Adicionar Nova Viagem' : 'Editar Viagem' }}</div>
+  @if (showAddTripModal) {
+    <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex justify-center items-center">
+        <div class="bg-[#FAFAFA] rounded-3xl w-full max-w-3xl p-8 shadow-2xl flex flex-col gap-6">
+            <h2 class="text-[#112B3C] text-3xl font-bold">Adicionar Nova Viagem</h2>
             
-            @let t = showAddTripModal ? newTrip : selectedTrip;
-
-            <div style="display: flex; flex-direction: column; gap: 16px;">
-              <div style="display: flex; gap: 16px;">
-                <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
-                  <label style="color: #112B3C; font-size: 14px; font-weight: 500;">Motorista</label>
-                  <input type="text" [(ngModel)]="t.driverName" style="padding: 12px; border-radius: 8px; border: none; background: #EEEEEF; outline: none; font-family: 'Google Sans Flex';">
-                </div>
-                <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
-                  <label style="color: #112B3C; font-size: 14px; font-weight: 500;">Data e Hora de Saída</label>
-                  <input type="datetime-local" [(ngModel)]="t.dateTime" style="padding: 12px; border-radius: 8px; border: none; background: #EEEEEF; outline: none; font-family: 'Google Sans Flex';">
-                </div>
-              </div>
-              <div style="display: flex; gap: 16px;">
-                <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
-                  <label style="color: #112B3C; font-size: 14px; font-weight: 500;">Ponto de Subida</label>
-                  <input type="text" [(ngModel)]="t.pickupPoint" style="padding: 12px; border-radius: 8px; border: none; background: #EEEEEF; outline: none; font-family: 'Google Sans Flex';">
-                </div>
-                <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
-                  <label style="color: #112B3C; font-size: 14px; font-weight: 500;">Ponto de Descida</label>
-                  <input type="text" [(ngModel)]="t.dropoffPoint" style="padding: 12px; border-radius: 8px; border: none; background: #EEEEEF; outline: none; font-family: 'Google Sans Flex';">
-                </div>
-              </div>
-              <div style="display: flex; gap: 16px;">
-                <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
-                  <label style="color: #112B3C; font-size: 14px; font-weight: 500;">Status da Viagem</label>
-                  <select [(ngModel)]="t.status" style="padding: 12px; border-radius: 8px; border: none; background: #EEEEEF; outline: none; font-family: 'Google Sans Flex';">
-                    <option value="SCHEDULED">Agendada</option>
-                    <option value="Em Andamento">Em Andamento</option>
-                    <option value="Concluída">Concluída</option>
-                    <option value="Cancelada">Cancelada</option>
+            <div class="flex flex-col gap-4">
+              
+              <div class="flex gap-4">
+                <div class="flex-1 flex flex-col gap-2">
+                  <label class="text-[#112B3C] font-bold text-sm">Veículo / Motorista</label>
+                  <select [(ngModel)]="newTrip.vehicleId" class="p-3 bg-[#EEEEEF] border-none rounded-lg outline-none">
+                    <option value="">Selecione o veículo...</option>
+                    @for (v of veiculosDisponiveis(); track v.id) {
+                      <option [value]="v.id">{{ v.model }} (Placa: {{ v.plate }})</option>
+                    }
                   </select>
                 </div>
-                <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
-                  <label style="color: #112B3C; font-size: 14px; font-weight: 500;">Valor por Km (R$)</label>
-                  <input type="number" step="0.01" [(ngModel)]="t.pricePerKm" placeholder="0.00" style="padding: 12px; border-radius: 8px; border: none; background: #EEEEEF; outline: none; font-family: 'Google Sans Flex';">
+                <div class="flex-1 flex flex-col gap-2">
+                  <label class="text-[#112B3C] font-bold text-sm">Data e Hora de Saída</label>
+                  <input type="datetime-local" [(ngModel)]="newTrip.dateTime" class="p-3 bg-[#EEEEEF] border-none rounded-lg outline-none">
                 </div>
               </div>
+              
+              <div class="flex flex-col gap-2">
+                <label class="text-[#112B3C] font-bold text-sm">Rota Base</label>
+                <select [(ngModel)]="newTrip.routeId" class="p-3 bg-[#EEEEEF] border-none rounded-lg outline-none">
+                  <option value="">Selecione a rota...</option>
+                  @for (r of allRoutes(); track r.id) {
+                    <option [value]="r.id">{{ r.name }}</option>
+                  }
+                </select>
+              </div>
+
+              @if (newTrip.routeId) {
+                <div class="flex gap-4">
+                  <div class="flex-1 flex flex-col gap-2">
+                    <label class="text-[#112B3C] font-bold text-sm">Ponto de Subida</label>
+                    <select [(ngModel)]="newTrip.boardingStopId" class="p-3 bg-[#EEEEEF] border-none rounded-lg outline-none">
+                      <option value="">Selecione...</option>
+                      @for (stop of paradasDaRotaSelecionada; track stop.id || stop.name) {
+                        <option [value]="stop.id">{{ stop.name }}</option>
+                      }
+                    </select>
+                  </div>
+                  <div class="flex-1 flex flex-col gap-2">
+                    <label class="text-[#112B3C] font-bold text-sm">Ponto de Descida</label>
+                    <select [(ngModel)]="newTrip.dropOffStopId" class="p-3 bg-[#EEEEEF] border-none rounded-lg outline-none">
+                      <option value="">Selecione...</option>
+                      @for (stop of paradasDaRotaSelecionada; track stop.id || stop.name) {
+                        <option [value]="stop.id">{{ stop.name }}</option>
+                      }
+                    </select>
+                  </div>
+                </div>
+              }
+
+              <div class="flex gap-4">
+                <div class="flex-1 flex flex-col gap-2">
+                  <label class="text-[#112B3C] font-bold text-sm">Status Inicial</label>
+                  <select [(ngModel)]="newTrip.status" class="p-3 bg-[#EEEEEF] border-none rounded-lg outline-none">
+                    <option value="SCHEDULED">Agendada</option>
+                    <option value="CONFIRMED">Confirmada</option>
+                  </select>
+                </div>
+                <div class="flex-1 flex flex-col gap-2">
+                  <label class="text-[#112B3C] font-bold text-sm">Preço Cobrado (R$)</label>
+                  <input type="number" step="0.01" [(ngModel)]="newTrip.price" placeholder="0.00" class="p-3 bg-[#EEEEEF] border-none rounded-lg outline-none">
+                </div>
+              </div>
+
             </div>
 
-            <div style="justify-content: flex-end; gap: 16px; display: flex; margin-top: 20px;">
-                <div (click)="closeTripModals()" style="cursor: pointer; padding: 12px 40px; background: #EEEEEF; border-radius: 8px; color: #557D96; font-family: 'Google Sans Flex'; font-weight: 700; text-transform: uppercase">Cancelar</div>
-                <div (click)="showAddTripModal ? saveNewTrip() : saveTripEdit()" style="cursor: pointer; padding: 12px 40px; background: #F66B0E; border-radius: 8px; color: white; font-family: 'Google Sans Flex'; font-weight: 700; text-transform: uppercase">Salvar</div>
+            <div class="flex justify-end gap-4 mt-4">
+                <button (click)="closeTripModals()" class="px-8 py-3 bg-[#EEEEEF] text-[#557D96] font-bold rounded-lg uppercase hover:bg-gray-300 transition">Cancelar</button>
+                <button (click)="saveNewTrip()" class="px-8 py-3 bg-[#F66B0E] text-white font-bold rounded-lg uppercase shadow-md hover:brightness-110 transition">Salvar Viagem</button>
+            </div>
+        </div>
+    </div>
+  }
+
+  @if (showEditTripModal) {
+    <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex justify-center items-center">
+        <div class="bg-[#FAFAFA] rounded-3xl w-full max-w-3xl p-8 shadow-2xl flex flex-col gap-6">
+            <h2 class="text-[#112B3C] text-3xl font-bold">Editar Viagem</h2>
+            
+            <div class="flex flex-col gap-4">
+              
+              <div class="flex gap-4">
+                <div class="flex-1 flex flex-col gap-2">
+                  <label class="text-[#112B3C] font-bold text-sm">Veículo / Motorista</label>
+                  <select [(ngModel)]="selectedTrip.vehicleId" class="p-3 bg-[#EEEEEF] border-none rounded-lg outline-none">
+                    <option value="">Selecione o veículo...</option>
+                    @for (v of veiculosDisponiveis(); track v.id) {
+                      <option [value]="v.id">{{ v.model }} (Placa: {{ v.plate }})</option>
+                    }
+                  </select>
+                </div>
+                <div class="flex-1 flex flex-col gap-2">
+                  <label class="text-[#112B3C] font-bold text-sm">Data e Hora de Saída</label>
+                  <input type="datetime-local" [(ngModel)]="selectedTrip.dateTime" class="p-3 bg-[#EEEEEF] border-none rounded-lg outline-none">
+                </div>
+              </div>
+              
+              <div class="flex flex-col gap-2">
+                <label class="text-[#112B3C] font-bold text-sm">Rota Base</label>
+                <select [(ngModel)]="selectedTrip.routeId" class="p-3 bg-[#EEEEEF] border-none rounded-lg outline-none">
+                  <option value="">Selecione a rota...</option>
+                  @for (r of allRoutes(); track r.id) {
+                    <option [value]="r.id">{{ r.name }}</option>
+                  }
+                </select>
+              </div>
+
+              @if (selectedTrip.routeId) {
+                <div class="flex gap-4">
+                  <div class="flex-1 flex flex-col gap-2">
+                    <label class="text-[#112B3C] font-bold text-sm">Ponto de Subida</label>
+                    <select [(ngModel)]="selectedTrip.boardingStopId" class="p-3 bg-[#EEEEEF] border-none rounded-lg outline-none">
+                      <option value="">Selecione...</option>
+                      @for (stop of paradasDaRotaEditSelecionada; track stop.id || stop.name) {
+                        <option [value]="stop.id">{{ stop.name }}</option>
+                      }
+                    </select>
+                  </div>
+                  <div class="flex-1 flex flex-col gap-2">
+                    <label class="text-[#112B3C] font-bold text-sm">Ponto de Descida</label>
+                    <select [(ngModel)]="selectedTrip.dropOffStopId" class="p-3 bg-[#EEEEEF] border-none rounded-lg outline-none">
+                      <option value="">Selecione...</option>
+                      @for (stop of paradasDaRotaEditSelecionada; track stop.id || stop.name) {
+                        <option [value]="stop.id">{{ stop.name }}</option>
+                      }
+                    </select>
+                  </div>
+                </div>
+              }
+
+              <div class="flex gap-4">
+                <div class="flex-1 flex flex-col gap-2">
+                  <label class="text-[#112B3C] font-bold text-sm">Status da Viagem</label>
+                  <select [(ngModel)]="selectedTrip.status" class="p-3 bg-[#EEEEEF] border-none rounded-lg outline-none">
+                    <option value="SCHEDULED">Agendada</option>
+                    <option value="CONFIRMED">Confirmada</option>
+                    <option value="COMPLETED">Concluída</option>
+                    <option value="CANCELED">Cancelada</option>
+                  </select>
+                </div>
+                <div class="flex-1 flex flex-col gap-2">
+                  <label class="text-[#112B3C] font-bold text-sm">Preço Cobrado (R$)</label>
+                  <input type="number" step="0.01" [(ngModel)]="selectedTrip.price" placeholder="0.00" class="p-3 bg-[#EEEEEF] border-none rounded-lg outline-none">
+                </div>
+              </div>
+
+            </div>
+
+            <div class="flex justify-end gap-4 mt-4">
+                <button (click)="closeTripModals()" class="px-8 py-3 bg-[#EEEEEF] text-[#557D96] font-bold rounded-lg uppercase hover:bg-gray-300 transition">Cancelar</button>
+                <button (click)="saveTripEdit()" class="px-8 py-3 bg-[#F66B0E] text-white font-bold rounded-lg uppercase shadow-md hover:brightness-110 transition">Salvar Alterações</button>
             </div>
         </div>
     </div>
   }
 
   @if (showDeleteTripModal) {
-    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;">
-        <div style="width: 800px; padding: 32px; background: #FAFAFA; border-radius: 24px; flex-direction: column; gap: 24px; display: flex">
-            <div style="color: #112B3C; font-size: 40px; font-family: 'Google Sans Flex'; font-weight: 700">Excluir Viagem</div>
-            <div style="flex-direction: column; gap: 10px; display: flex">
-                <div style="color: #112B3C; font-size: 20px; font-family: 'Google Sans Flex'; font-weight: 700">Tem certeza que deseja excluir a viagem do dia {{ selectedTrip?.dateTime | date:'dd/MM/yyyy HH:mm' }}?</div>
-                <div style="align-self: flex-start; padding: 9px 24px; background: #EEEEEF; border-radius: 12px; color: #D32F2F; font-size: 14px; font-weight: 700; font-family: 'Google Sans Flex'; text-transform: uppercase">Esta ação não poderá ser revertida</div>
+    <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex justify-center items-center">
+        <div class="bg-[#FAFAFA] rounded-3xl w-full max-w-2xl p-8 shadow-2xl flex flex-col gap-6">
+            <h2 class="text-[#112B3C] text-4xl font-bold">Cancelar Viagem</h2>
+            <div class="flex flex-col gap-2">
+                <p class="text-[#112B3C] text-xl font-bold">Tem certeza que deseja cancelar a viagem do dia {{ selectedTrip?.dateTime | date:'dd/MM/yyyy HH:mm' }}?</p>
+                <div class="bg-[#EEEEEF] self-start px-4 py-2 rounded-lg"><span class="text-[#D32F2F] font-bold text-sm uppercase">Esta ação não poderá ser revertida.</span></div>
             </div>
-            <div style="justify-content: flex-end; gap: 16px; display: flex; margin-top: 16px;">
-                <div (click)="closeTripModals()" style="cursor: pointer; padding: 12px 40px; background: #EEEEEF; border-radius: 8px; color: #557D96; font-family: 'Google Sans Flex'; font-weight: 700; text-transform: uppercase">Cancelar</div>
-                <div (click)="deleteTrip()" style="cursor: pointer; padding: 12px 40px; background: #D32F2F; border-radius: 8px; color: white; font-family: 'Google Sans Flex'; font-weight: 700; text-transform: uppercase">Excluir</div>
+            <div class="flex justify-end gap-4 mt-6">
+                <button (click)="closeTripModals()" class="px-8 py-3 bg-[#EEEEEF] text-[#557D96] font-bold rounded-lg uppercase hover:bg-gray-300 transition">Voltar</button>
+                <button (click)="deleteTrip()" class="px-8 py-3 bg-[#D32F2F] text-white font-bold rounded-lg uppercase shadow-md hover:brightness-110 transition">Cancelar Viagem</button>
             </div>
         </div>
     </div>
   }
+
+  @if (showReviewsModal) {
+    <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex justify-center items-center">
+        <div class="bg-[#FAFAFA] rounded-3xl w-full max-w-2xl max-h-[80vh] overflow-y-auto p-8 shadow-2xl flex flex-col gap-6">
+            
+            <div class="flex justify-between items-center">
+              <h2 class="text-[#112B3C] text-3xl font-bold">Avaliações da Viagem</h2>
+              <button (click)="closeTripModals()" class="text-3xl text-[#646464] hover:text-black">&times;</button>
+            </div>
+            
+            <p class="text-[#646464] text-base font-medium">Ref: {{selectedTrip?.tripName}}</p>
+
+            <div class="flex flex-col gap-4">
+              @for (review of selectedTrip?.reviews; track review.id) {
+                <div class="flex gap-4 border-b border-[#E0E0E0] pb-4">
+                  <div class="w-12 h-12 rounded-full bg-[#D9D9D9] flex justify-center items-center text-white shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#999"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                  </div>
+                  <div class="flex-1 flex flex-col gap-1">
+                    <div class="flex justify-between items-center">
+                      <span class="text-[#112B3C] text-base font-bold">{{ review.clientName }}</span>
+                      <div class="flex items-center gap-3">
+                        <span class="text-[#F66B0E] text-sm font-bold flex items-center gap-1">
+                          {{ review.rating }} <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                        </span>
+                      </div>
+                    </div>
+                    <p class="text-[#646464] text-sm">{{ review.comment }}</p>
+                  </div>
+                </div>
+              }
+              
+              @if (!selectedTrip?.reviews || selectedTrip?.reviews.length === 0) {
+                <div class="text-center text-[#999] p-5">Esta viagem ainda não possui avaliações.</div>
+              }
+            </div>
+            
+            <div class="flex justify-end mt-4">
+              <button (click)="closeTripModals()" class="px-8 py-3 bg-[#EEEEEF] text-[#557D96] font-bold rounded-lg uppercase hover:bg-gray-300 transition">Fechar</button>
+            </div>
+        </div>
+    </div>
+  }
+
 </div>

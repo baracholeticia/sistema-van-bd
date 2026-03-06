@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
-
 export interface Cliente {
   id: string;
   name: string;
@@ -44,9 +43,9 @@ export class ClienteService {
   adicionar(cliente: Partial<Cliente>): Observable<Cliente> {
     return this.http.post<Cliente>(`${this.API_URL}/clients`, cliente);
   }
-
-  editar(cliente: Partial<Cliente> & { id: string; }, payload: any): Observable<Cliente> {
-    return this.http.put<Cliente>(`${this.API_URL}/clients/${cliente.id}`, cliente);
+  
+  editar(id: string, payload: any): Observable<Cliente> {
+    return this.http.put<Cliente>(`${this.API_URL}/clients/${id}`, payload);
   }
 
   excluir(id: string): Observable<void> {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RelatoriosService } from '../../services/relatorios.service'; // Importamos o service
+import { RelatoriosService } from '../../services/relatorios.service';
 
 export interface DetalhesViagem {
   travelId: string;
@@ -8,14 +8,14 @@ export interface DetalhesViagem {
   vehicleModel: string;
   vehiclePlate: string;
   routeName: string;
-  departureTime: Date;
+  departureTime: Date | string;
   status: string;
 }
 
 export interface RelatorioFinanceiro {
   travelId: string;
   routeName: string;
-  departureTime: Date;
+  departureTime: Date | string;
   totalPassengers: number;
   totalRevenue: number;
 }
@@ -31,16 +31,14 @@ export interface RankingMotorista {
   selector: 'app-relatorios',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './relatorios.html'
+  templateUrl: './relatorios.html' // Ou relatorios.component.html (depende do seu arquivo real)
 })
 export class RelatoriosComponent implements OnInit {
 
-  // As listas começam vazias
   detalhesViagens: DetalhesViagem[] = [];
   relatoriosFinanceiros: RelatorioFinanceiro[] = [];
   rankingMotoristas: RankingMotorista[] = [];
 
-  // Injetamos o service no construtor
   constructor(private relatoriosService: RelatoriosService) {}
 
   ngOnInit(): void {
@@ -48,7 +46,6 @@ export class RelatoriosComponent implements OnInit {
   }
 
   carregarDados(): void {
-    // Busca os dados e preenche as variáveis
     this.relatoriosService.getDetalhesViagens().subscribe({
       next: (dados) => this.detalhesViagens = dados,
       error: (erro) => console.error('Erro ao buscar viagens', erro)

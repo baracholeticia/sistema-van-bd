@@ -1,9 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ClienteService } from '../../../services/client.service'; 
-import { ToastService } from '../../../components/toast/toast.service'; 
-import { Toast } from '../../../components/toast/toast'; 
+import { ClienteService } from '../../../services/client.service';
+import { ToastService } from '../../../components/toast/toast.service';
 
 @Component({
   selector: 'app-cliente-edit',
@@ -13,28 +12,43 @@ import { Toast } from '../../../components/toast/toast';
 })
 export class ClienteEditComponent implements OnInit {
 
-  @Input() cliente: any; // Recebe o cliente clicado na tabela
+  @Input() cliente: any; 
   @Output() aoFechar = new EventEmitter<boolean>();
 
-  clienteEditado: any = {}; // Cópia local para edição
-  mostrarSenha = false;
   carregando = signal(false);
+  mostrarSenha = false; // Controle do olhinho da senha
+  
+  // Objeto preparado com todos os campos que o PassengerUpdateDTO aceita
+  clienteEditado: any = {
+    name: '',
+    email: '',
+    phone: '',
+    cpf: '',
+    password: '',
+    birthDate: ''
+  };
 
   constructor(
-    private clienteService: ClienteService,
+    private service: ClienteService,
     private toastService: ToastService
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     if (this.cliente) {
+      // O banco envia YYYY-MM-DD. Precisamos formatar para DD/MM/YYYY para a máscara não quebrar.
+      let dataFormatada = this.cliente.birthDate || '';
+      if (dataFormatada && dataFormatada.includes('-')) {
+        const [ano, mes, dia] = dataFormatada.split('-');
+        dataFormatada = `${dia}/${mes}/${ano}`;
+      }
+
       this.clienteEditado = { 
-        id: this.cliente.id,
-        name: this.cliente.name || this.cliente.nome || '',
-        email: this.cliente.email || '',
-        cpf: this.cliente.cpf || this.cliente.identidade || '',
-        telephone: this.cliente.phone || this.cliente.telephone || this.cliente.telefone || '',
-        birthDate: this.cliente.birthDate || this.cliente.dataNascimento || '',
-        password: '' 
+        name: this.cliente.name,
+        email: this.cliente.email,
+        phone: this.cliente.phone,
+        cpf: this.cliente.cpf,
+        birthDate: dataFormatada,
+        password: '' // Sempre vazio por segurança
       };
     }
   }
@@ -43,7 +57,58 @@ export class ClienteEditComponent implements OnInit {
     this.mostrarSenha = !this.mostrarSenha;
   }
 
-  // --- MÁSCARAS DE FORMATAÇÃO ---
+  fechar() {
+    this.aoFechar.emit(false);
+  }
+
+  salvar() {
+    if (!this.cliente || !this.cliente.id) {
+      this.toastService.error('Erro: ID do cliente não encontrado.');
+      return;
+    }
+
+    // Validação básica garantindo que os campos principais existam
+    if (!this.clienteEditado.name || !this.clienteEditado.email || !this.clienteEditado.cpf || !this.clienteEditado.phone || !this.clienteEditado.birthDate) {
+      this.toastService.error('Preencha todos os campos obrigatórios.');
+      return;
+    }
+
+    this.carregando.set(true);
+
+    // Removemos os pontos e traços para enviar limpo pro banco
+    const cpfLimpo = this.clienteEditado.cpf.replace(/\D/g, '');
+    const phoneLimpo = this.clienteEditado.phone.replace(/\D/g, '');
+
+    // Construção dinâmica do Payload
+    const payload: any = {
+      name: this.clienteEditado.name,
+      email: this.clienteEditado.email,
+      phone: phoneLimpo,
+      cpf: cpfLimpo,
+      birthDate: this.clienteEditado.birthDate
+    };
+
+    // Só enviamos a senha se o admin digitou alguma coisa no campo
+    if (this.clienteEditado.password && this.clienteEditado.password.trim() !== '') {
+      payload.password = this.clienteEditado.password;
+    }
+
+    // Passa o ID e o Payload separadamente!
+    this.service.editar(this.cliente.id, payload).subscribe({
+      next: () => {
+        this.carregando.set(false);
+        this.toastService.success('Cliente atualizado com sucesso!');
+        this.aoFechar.emit(true); 
+      },
+      error: (err: any) => {
+        this.carregando.set(false);
+        console.error('Erro ao editar:', err);
+        this.toastService.error(err.error?.message || 'Erro ao editar cliente.');
+      }
+    });
+  }
+
+  // --- MÁSCARAS ---
   onCpfInput(event: any) {
     const input = event.target as HTMLInputElement;
     let value = input.value.replace(/\D/g, ''); 
@@ -57,16 +122,12 @@ export class ClienteEditComponent implements OnInit {
     let value = input.value.replace(/\D/g, '');
     if (value.length > 11) value = value.slice(0, 11);
 
-    if (value.length > 10) {
-      value = value.replace(/^(\d\d)(\d{5})(\d{4}).*/, '($1)$2-$3');
-    } else if (value.length > 6) {
-      value = value.replace(/^(\d\d)(\d{4})(\d{0,4}).*/, '($1)$2-$3');
-    } else if (value.length > 2) {
-      value = value.replace(/^(\d\d)(\d{0,5}).*/, '($1)$2');
-    } else if (value.length > 0) {
-      value = value.replace(/^(\d*)/, '($1');
-    }
-    this.clienteEditado.telephone = value;
+    if (value.length > 10) value = value.replace(/^(\d\d)(\d{5})(\d{4}).*/, '($1)$2-$3');
+    else if (value.length > 6) value = value.replace(/^(\d\d)(\d{4})(\d{0,4}).*/, '($1)$2-$3');
+    else if (value.length > 2) value = value.replace(/^(\d\d)(\d{0,5}).*/, '($1)$2');
+    else if (value.length > 0) value = value.replace(/^(\d*)/, '($1');
+
+    this.clienteEditado.phone = value; // Corrigido para 'phone'
     input.value = value;
   }
 
@@ -75,66 +136,10 @@ export class ClienteEditComponent implements OnInit {
     let value = input.value.replace(/\D/g, '');
     if (value.length > 8) value = value.slice(0, 8);
 
-    if (value.length > 4) {
-      value = value.replace(/^(\d{2})(\d{2})(\d{0,4}).*/, '$1/$2/$3');
-    } else if (value.length > 2) {
-      value = value.replace(/^(\d{2})(\d{0,2}).*/, '$1/$2');
-    }
+    if (value.length > 4) value = value.replace(/^(\d{2})(\d{2})(\d{0,4}).*/, '$1/$2/$3');
+    else if (value.length > 2) value = value.replace(/^(\d{2})(\d{0,2}).*/, '$1/$2');
+
     this.clienteEditado.birthDate = value;
     input.value = value;
-  }
-
-  fechar() {
-    this.aoFechar.emit(false); 
-  }
-
-  salvar() {
-    if (!this.clienteEditado.id) return;
-
-    const d = this.clienteEditado;
-
-    // Validações básicas
-    if (!d.name || !d.email || !d.cpf || !d.telephone) {
-      this.toastService.error('Preencha todos os campos obrigatórios.');
-      return;
-    }
-
-    if (d.cpf.length !== 11) {
-      this.toastService.error('O CPF deve ter exatamente 11 dígitos.');
-      return;
-    }
-
-    this.carregando.set(true);
-
-    // Monta o objeto para o Backend
-    const payload: any = {
-      name: d.name,
-      email: d.email,
-      cpf: d.cpf,
-      telephone: d.telephone,
-      birthDate: d.birthDate,
-      role: 'passenger'
-    };
-
-    // Só envia a senha se ele digitou uma nova
-    if (d.password && d.password.trim() !== '') {
-      payload.password = d.password;
-    }
-
-    this.clienteService.editar(this.clienteEditado.id, payload).subscribe({
-      next: () => {
-        this.carregando.set(false);
-        this.toastService.success('Cliente atualizado com sucesso!');
-        this.aoFechar.emit(true); // Emite 'true' para atualizar a tabela na tela principal
-      },
-      error: (err: any) => {
-        this.carregando.set(false);
-        if (err?.error?.message) {
-          this.toastService.error(err.error.message);
-        } else {
-          this.toastService.error('Erro ao editar cliente. Verifique os dados.');
-        }
-      }
-    });
   }
 }

@@ -70,8 +70,8 @@
             <label class="text-[#112B3C] font-medium text-sm">Telefone</label>
             <div class="bg-[#EEEEEF] rounded-lg p-3">
               <input type="tel"
-                     name="telephone"
-                     [ngModel]="clienteEditado.telephone"
+                     name="phone"
+                     [ngModel]="clienteEditado.phone"
                      (input)="onPhoneInput($event)"
                      placeholder="(00)00000-0000"
                      inputmode="numeric"
@@ -106,7 +106,7 @@
                   class="bg-[#F66B0E] text-[#EEEEEF] font-bold uppercase tracking-wider px-10 py-3.5 rounded-lg hover:bg-[#d95a00] transition-colors shadow-md disabled:opacity-50"
                   (click)="salvar()"
                   [disabled]="carregando()">
-            {{ carregando() ? 'Salvando...' : 'Salvar' }}
+            {{ carregando() ? 'Salvando...' : 'Salvar Alterações' }}
           </button>
         </div>
 

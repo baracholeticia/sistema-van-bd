@@ -15,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Service
@@ -102,6 +104,18 @@ public class AdminService {
         if (dto.email() != null && !dto.email().isBlank()) passenger.setEmail(dto.email());
         if (dto.phone() != null && !dto.phone().isBlank()) passenger.setPhone(dto.phone());
         if (dto.cpf() != null && !dto.cpf().isBlank()) passenger.setCpf(dto.cpf());
+
+        // Adicionando a atualização da Data de Nascimento
+        if (dto.birthDate() != null && !dto.birthDate().isBlank()) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            passenger.setBirthDate(LocalDate.parse(dto.birthDate(), formatter));
+        }
+
+        // Adicionando a atualização da Senha (com criptografia)
+        if (dto.password() != null && !dto.password().isBlank()) {
+            // Lembre-se de ter o 'private final PasswordEncoder passwordEncoder;' injetado no construtor do Service
+            passenger.setPassword(passwordEncoder.encode(dto.password())); 
+        }
 
         return PassengerResponseDTO.from(passengerRepository.save(passenger));
     }
